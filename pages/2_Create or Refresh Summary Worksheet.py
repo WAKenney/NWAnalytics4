@@ -1,6 +1,9 @@
 import pandas as pd
 import geopandas as gpd
 import streamlit as st
+import io
+# from io import BytesIO
+import base64
 
 
 df_trees = pd.DataFrame()
@@ -114,44 +117,6 @@ if 'tree_name' not in dataCols:
     df_trees["tree_name"] = df_trees.apply(lambda x : str(x["block"]) + '-' +  str(x["tree_number"]), axis=1)
 
 df_trees = df_trees.merge(df_streets.loc[:,['street_code', 'street_name']], how='left')
-
-
-# def fixTitles():
-
-#     #  Column titles from the Neighourwoods MS 2.6 workbook
-#     nwWkbkTitles = ['tree index','Tree name', 'Date', 'Block Id', 'Tree No', 'House Number', 'street_code', 'species_code', 'location_code', 
-#     'ownership_code', 'Number of Stems', 'DBH', 'Hard surface', 'Crown Width', 'Ht to base', 'Total Height', 'Reduced Crown', 
-#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
-#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
-#     'Girdling Roots', 'Exposed Roots', 'Recent Trenching', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
-#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'X coordinate', 'Y coordinate']
-
-#     #  Column titles from the Neighourwoods Memento data entry library
-#     mementoTitles = ['Tree name', 'Date', 'Block Id', 'Tree No', 'House Number', 'street_code', 'species_code', 'location', 
-#     'ownership', 'Number of Stems', 'DBH', 'Hard surface', 'Crown Width', 'Ht to base', 'Total Height', 'Reduced Crown', 
-#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
-#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
-#     'Girdling Roots', '', 'Recent Trenching', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
-#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'xy', 'Photo 1', 'Photo 2']
-
-#     #  Column titles from the Neighbourwoods_Data_ENTRY_141221.xlsm workbook
-#     nwInputTitles = ['Date(dd/mm/yy)', 'Block', 'Tree No', 'House Number', 'Street Code', 'Species Code', 'Location Code', 
-#     'Ownership Code', 'No. of Stems', 'DBH (cm)', '% Hard surface', 'Crown Width (m)', 'Ht to base of crown.', 'Total Height (m)', 'Reduced Crown', 
-#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
-#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
-#     'Girdling Roots', 'Recent Trenching', 'Exposed Roots', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
-#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'X coordinate', 'Y coordinate']
-
-#     dfTitles = df_trees.columns
-
-#     for nwWkbkTitle in nwWkbkTitles:
-#         if nwWkbkTitle not in dfTitles:
-#             st.warning("Ooops ", nwWkbkTitle, " isn't a column in your dataset!")
-
-#         if inputType == 'Neighourwoods Memento data entry library':
-#             st.info ('You have selected "Neighourwoods Memento data entry library" as your input data type')
-#     else:
-#         st.info ('You have selected "Neighbourwoods_Data_ENTRY.xlsm workbook" as your input data type')    
 
 if 'exposed_roots' not in df_trees.columns:
     df_trees.insert(30,"exposed_roots",'')
@@ -337,8 +302,6 @@ condition() # This calls the function condition()
 
 ####################################
 
-st.write(df_trees.columns)
-
 def defect_setup(df):
     """
     This def adds a column to the dataframe containing text descriptions for the level of defects based on the yes or no 
@@ -422,10 +385,58 @@ st.session_state['df_trees'] = df_trees
 
 st.dataframe(df_trees)
 
-st.download_button(
-    label="Download data as CSV",
-    data=df_trees.to_csv(),
-    file_name="summary.csv",
-    mime = 'text/csv'
-    # mime="application/vnd.ms-excel"
-    )
+
+#Option to save the data checking table as a spreadsheet
+towrite = io.BytesIO()
+downloaded_file = df_trees.to_excel(towrite, index=False, header=True, sheet_name = 'summary')
+towrite.seek(0)  # reset pointer
+b64 = base64.b64encode(towrite.read()).decode()  # some strings
+linko= f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="summary data.xlsx">Click here to save your data as an Excel file</a>'
+st.markdown(linko, unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+#####################################
+
+
+# def fixTitles():
+
+#     #  Column titles from the Neighourwoods MS 2.6 workbook
+#     nwWkbkTitles = ['tree index','Tree name', 'Date', 'Block Id', 'Tree No', 'House Number', 'street_code', 'species_code', 'location_code', 
+#     'ownership_code', 'Number of Stems', 'DBH', 'Hard surface', 'Crown Width', 'Ht to base', 'Total Height', 'Reduced Crown', 
+#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
+#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
+#     'Girdling Roots', 'Exposed Roots', 'Recent Trenching', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
+#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'X coordinate', 'Y coordinate']
+
+#     #  Column titles from the Neighourwoods Memento data entry library
+#     mementoTitles = ['Tree name', 'Date', 'Block Id', 'Tree No', 'House Number', 'street_code', 'species_code', 'location', 
+#     'ownership', 'Number of Stems', 'DBH', 'Hard surface', 'Crown Width', 'Ht to base', 'Total Height', 'Reduced Crown', 
+#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
+#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
+#     'Girdling Roots', '', 'Recent Trenching', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
+#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'xy', 'Photo 1', 'Photo 2']
+
+#     #  Column titles from the Neighbourwoods_Data_ENTRY_141221.xlsm workbook
+#     nwInputTitles = ['Date(dd/mm/yy)', 'Block', 'Tree No', 'House Number', 'Street Code', 'Species Code', 'Location Code', 
+#     'Ownership Code', 'No. of Stems', 'DBH (cm)', '% Hard surface', 'Crown Width (m)', 'Ht to base of crown.', 'Total Height (m)', 'Reduced Crown', 
+#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
+#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
+#     'Girdling Roots', 'Recent Trenching', 'Exposed Roots', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
+#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'X coordinate', 'Y coordinate']
+
+#     dfTitles = df_trees.columns
+
+#     for nwWkbkTitle in nwWkbkTitles:
+#         if nwWkbkTitle not in dfTitles:
+#             st.warning("Ooops ", nwWkbkTitle, " isn't a column in your dataset!")
+
+#         if inputType == 'Neighourwoods Memento data entry library':
+#             st.info ('You have selected "Neighourwoods Memento data entry library" as your input data type')
+#     else:
+#         st.info ('You have selected "Neighbourwoods_Data_ENTRY.xlsm workbook" as your input data type')    
