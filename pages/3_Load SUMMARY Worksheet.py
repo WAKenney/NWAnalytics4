@@ -1,9 +1,12 @@
 import streamlit as st
 import pandas as pd
+import geopandas as gpd
 
 st.title('Load the SUMMARY data')
 
-currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/main/"
+info_screen = st.empty()
+
+currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
 fileName ='empty'
 
@@ -22,6 +25,7 @@ def getData(fileName):
 
     #read the species table from the current directory which should be Github repo
     speciesFile = currentDir + 'NWspecies220522.xlsx' 
+
     speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
 
     # Standardize column names to lower case and hyphenated (no spaces).
@@ -46,75 +50,74 @@ def getData(fileName):
                                 'DBH Class':'dbh_class','Native':'native','Species Suitability':'suitability','Structural Defect':'structural', 
                                 'Health Defect':'health'})
 
-    def defect_setup(df):
-        """
-        This def adds a column to the dataframe containing text descriptions for the level of defects based on the yes or no 
-        respones in the structural and health columns of the input data.
-        """
+    # def defect_setup(df):
+    #     """
+    #     This def adds a column to the dataframe containing text descriptions for the level of defects based on the yes or no 
+    #     respones in the structural and health columns of the input data.
+    #     """
+    #     if ((df['structural'] == 'no') & (df['health'] =='no')):
+    #         return 'No major defects'
+    #     elif ((df['structural'] == 'yes') & (df['health'] =='no')):
+    #         return 'Major structural defect(s)'
+    #     elif ((df['structural'] == 'no') & (df['health'] =='yes')):
+    #         return 'Major health defect(s)'
+    #     elif ((df['structural'] == 'yes') & (df['health'] =='yes')):
+    #         return 'Major structural AND health defect(s)'
+    #     else:
+    #         return 'Condition was not assessed'
 
-        if ((df['structural'] == 'no') & (df['health'] =='no')):
-            return 'No major defects'
-        elif ((df['structural'] == 'yes') & (df['health'] =='no')):
-            return 'Major structural defect(s)'
-        elif ((df['structural'] == 'no') & (df['health'] =='yes')):
-            return 'Major health defect(s)'
-        elif ((df['structural'] == 'yes') & (df['health'] =='yes')):
-            return 'Major structural AND health defect(s)'
-        else:
-            return 'Condition was not assessed'
-
-    df['defects'] = df.apply(defect_setup, axis = 1) #Apply the defect_setup fucntion to all rows of the trees dataframe
+    # df['defects'] = df.apply(defect_setup, axis = 1) #Apply the defect_setup fucntion to all rows of the trees dataframe
     
-    def setDefectColour(df):
-        ''' sets a colour name in column defectColour based on the value in column defects.  This is for mapping'''
+    # def setDefectColour(df):
+    #     ''' sets a colour name in column defectColour based on the value in column defects.  This is for mapping'''
         
-        if df['defects'] == 'No major defects':
-            return 'darkgreen'
+    #     if df['defects'] == 'No major defects':
+    #         return 'darkgreen'
 
-        elif df['defects'] == 'Major structural defect(s)':
-            return 'yellow'
+    #     elif df['defects'] == 'Major structural defect(s)':
+    #         return 'yellow'
         
-        elif df['defects'] == 'Major health defect(s)':
-            return 'greenyellow'
+    #     elif df['defects'] == 'Major health defect(s)':
+    #         return 'greenyellow'
 
-        elif df['defects'] == 'Major structural AND health defect(s)':
-            return 'red'
+    #     elif df['defects'] == 'Major structural AND health defect(s)':
+    #         return 'red'
         
-        else:
-            return 'black'
+    #     else:
+    #         return 'black'
 
-    # Apply defectColour function to all rows of the trees dataframe
-    df['defectColour'] = df.apply(setDefectColour, axis = 1) 
+    # # Apply defectColour function to all rows of the trees dataframe
+    # df['defectColour'] = df.apply(setDefectColour, axis = 1) 
 
-    #Read variables from the speices table and add them to the trees table
-    # df = pd.merge(df, speciesTable[['species', 'seRegion']], on="species", how="left", sort=False)
-    # df = pd.merge(df, speciesTable[['species', 'color']], on="species", how="left", sort=False)
-    df = pd.merge(df, speciesTable[['species', 'color', 'seRegion']], on="species", how="left", sort=False)
+    # #Read variables from the speices table and add them to the trees table
+    # # df = pd.merge(df, speciesTable[['species', 'seRegion']], on="species", how="left", sort=False)
+    # # df = pd.merge(df, speciesTable[['species', 'color']], on="species", how="left", sort=False)
+    # df = pd.merge(df, speciesTable[['species', 'color', 'seRegion']], on="species", how="left", sort=False)
 
-    #Record a suitability of very poor for any species that is invasive based on the species table
-    df.loc[(df.invasivity =='invasive'), 'suitability'] = 'very poor'
+    # #Record a suitability of very poor for any species that is invasive based on the species table
+    # df.loc[(df.invasivity =='invasive'), 'suitability'] = 'very poor'
 
-    df.merge(speciesTable, how = 'left', on = 'species', sort = False )
+    # df.merge(speciesTable, how = 'left', on = 'species', sort = False )
 
-    # save the 'data' pandas dataframe as a geodataframe
-    df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude)).copy() 
+    # # save the 'data' pandas dataframe as a geodataframe
+    # df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude)).copy() 
     
-    # Save the inventory dates as a string.  Otherwise an error is thrown when mapping
-    df['date'] = df['date'].astype(str)
+    # # Save the inventory dates as a string.  Otherwise an error is thrown when mapping
+    # df['date'] = df['date'].astype(str)
 
-    # get the species specific colour from the species table for each entry and create the coloursTable
-    colorsTable = pd.read_excel(speciesFile,sheet_name = "colors")
-    colorsTable.set_index('taxon', inplace = True)
+    # # get the species specific colour from the species table for each entry and create the coloursTable
+    # colorsTable = pd.read_excel(speciesFile,sheet_name = "colors")
+    # colorsTable.set_index('taxon', inplace = True)
 
-    return [df, speciesTable, colorsTable]
+    # return [df, speciesTable, colorsTable]
 
 
 
 if fileName is not None:
 
     with st.spinner(text = 'Setting up your data, please wait...'):
-        df = getData(fileName)[0]
 
+        df = getData(fileName)[0]
         speciesTable = getData(fileName)[1]
         colorsTable = getData(fileName)[2]
         colorsDict = colorsTable.to_dict('dict')['color']
@@ -137,5 +140,95 @@ if fileName is not None:
         # display the selected data (select_df) using AgGrid
         select_df = getData(fileName)
 
-        st.dataframe(select_df)
+        # st.dataframe(select_df)
         
+
+        
+#########################
+
+def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds a UI on top of a dataframe to let viewers filter columns
+
+    Args:
+        df (pd.DataFrame): Original dataframe
+
+    Returns:
+        pd.DataFrame: Filtered dataframe
+    """
+    modify = st.checkbox("Add filters")
+
+    if not modify:
+        return df
+
+    df = df.copy()
+
+    # Try to convert datetimes into a standard format (datetime, no timezone)
+    for col in df.columns:
+        if is_object_dtype(df[col]):
+            try:
+                df[col] = pd.to_datetime(df[col])
+            except Exception:
+                pass
+
+        if is_datetime64_any_dtype(df[col]):
+            df[col] = df[col].dt.tz_localize(None)
+
+    modification_container = st.container()
+
+    with modification_container:
+        to_filter_columns = st.multiselect("Filter dataframe on", df.columns)
+        for column in to_filter_columns:
+            left, right = st.columns((1, 20))
+            # Treat columns with < 10 unique values as categorical
+            if is_categorical_dtype(df[column]) or df[column].nunique() < 10:
+                user_cat_input = right.multiselect(
+                    f"Values for {column}",
+                    df[column].unique(),
+                    default=list(df[column].unique()),
+                )
+                df = df[df[column].isin(user_cat_input)]
+            elif is_numeric_dtype(df[column]):
+                _min = float(df[column].min())
+                _max = float(df[column].max())
+                step = (_max - _min) / 100
+                user_num_input = right.slider(
+                    f"Values for {column}",
+                    min_value=_min,
+                    max_value=_max,
+                    value=(_min, _max),
+                    step=step,
+                )
+                df = df[df[column].between(*user_num_input)]
+            elif is_datetime64_any_dtype(df[column]):
+                user_date_input = right.date_input(
+                    f"Values for {column}",
+                    value=(
+                        df[column].min(),
+                        df[column].max(),
+                    ),
+                )
+                if len(user_date_input) == 2:
+                    user_date_input = tuple(map(pd.to_datetime, user_date_input))
+                    start_date, end_date = user_date_input
+                    df = df.loc[df[column].between(start_date, end_date)]
+            else:
+                user_text_input = right.text_input(
+                    f"Substring or regex in {column}",
+                )
+                if user_text_input:
+                    df = df[df[column].astype(str).str.contains(user_text_input)]
+
+    st.download_button("Download filtered data as a csv file",
+                       df.to_csv().encode('utf-8'),
+                       file_name = "Filtered_data.csv",
+                       mime = 'text/csv')
+
+
+    return df
+
+# filtdf = filter_dataframe(select_df)
+
+# st.subheader('Filtered Data')
+
+st.dataframe(select_df)
