@@ -81,7 +81,6 @@ df_trees.rename(columns = {'Tree Name':'tree_name','Date':'date','Block Id':'blo
 
 dataCols =df_trees.columns
 
-# df_streets=df_streets.rename(columns = {'ADDRESS':'street_code','ADDRESSNAME':'street_name','street':'street_code','street name':'street_name' })
 df_streets.rename(columns = {'ADDRESS':'street_code','ADDRESSNAME':'street_name','street':'street_code','street name':'street_name' }, inplace = True)
 
 if 'xy' in dataCols:
@@ -113,8 +112,6 @@ df_streets['street_name'] = df_streets['street_name'].str.strip()
 
 if 'tree_name' not in dataCols:
     df_trees["tree_name"] = df_trees.apply(lambda x : str(x["block"]) + '-' +  str(x["tree_number"]), axis=1)
-
-# df_trees = df_trees.merge(df_streets, on="street_code", how = "left")
 
 df_trees = df_trees.merge(df_streets.loc[:,['street_code', 'street_name']], how='left')
 
@@ -161,7 +158,6 @@ if 'exposed_roots' not in df_trees.columns:
 
 cols = df_trees.columns
 
-
 # def getSpeciesTable(): 
 #     speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
 #     return speciesTable
@@ -183,7 +179,6 @@ def getEcodistricts():
 
 def getCodes():
     codes = pd.read_excel(speciesFile, sheet_name = 'codes')
-    
     return codes
 
 df_codes = getCodes()
@@ -208,12 +203,9 @@ def cpa(cw):
     '''
     if pd.isnull(df_trees['crown_width'].iloc[0]):
         cpa = 'n/a'
-    
     else:
        cpa = ((cw/2)**2)*3.14
-
     # cpa= int(cpa)
-    
     return cpa
 
 df_trees['Crown Projection Area (CPA)'] = df_trees['crown_width'].apply(lambda x: (cpa(x)))
@@ -265,7 +257,8 @@ def structural(df):
     else:
         return 'no'
 
-df_trees['Structural Defect']= df_trees.apply(structural, axis =1)
+# df_trees['Structural Defect']= df_trees.apply(structural, axis =1)
+df_trees['Structural Defects']= df_trees.apply(structural, axis =1)
 
 def health(df):
     if df['defoliation'] ==3:
@@ -283,7 +276,8 @@ def health(df):
     else:
         return 'no'
 
-df_trees['Health Defect']= df_trees.apply(health, axis =1)
+# df_trees['Health Defect']= df_trees.apply(health, axis =1)
+df_trees['Health Defects']= df_trees.apply(health, axis =1)
 
 
 def desc(df):
@@ -295,16 +289,16 @@ def desc(df):
     df['Description'] = "Tree {} is a {} at {}. The most recent assessment was done on {}.".format(df['tree_name'], df['species'], df['Address'], df['date'])
     # df['Description'] = f"Tree {df['tree_name']} is a {df['species']} at {df['Address']}. The most recent assessment was done on {df['date']:%B %d, %y}."
 
-    if df['Structural Defect'] == 'yes' and df['Health Defect'] =='yes':
+    if df['Structural Defects'] == 'yes' and df['Health Defects'] =='yes':
         df['Description'] = df['Description'] + ' It has significant structural AND health defects'
     
-    elif df['Structural Defect'] == 'yes':
+    elif df['Structural Defects'] == 'yes':
         df['Description'] = df['Description'] + ' It has at least one significant structural defect.'
     
-    elif df['Health Defect'] == 'yes':
+    elif df['Health Defects'] == 'yes':
         df['Description'] = df['Description'] + ' It has at least one significant health defect.'
     
-    elif df['Structural Defect'] == 'yes' and df['Health Defect'] =='yes':
+    elif df['Structural Defects'] == 'yes' and df['Health Defects'] =='yes':
         df['Description'] = df['Description'] + ' It has significant structural AND health defects'
     
     else:
@@ -339,6 +333,72 @@ def condition():
 
 condition() # This calls the function condition()
 
+
+
+####################################
+
+st.write(df_trees.columns)
+
+def defect_setup(df):
+    """
+    This def adds a column to the dataframe containing text descriptions for the level of defects based on the yes or no 
+    respones in the structural and health columns of the input data.
+    """
+    if ((df['Structural Defects'] == 'no') & (df['Health Defects'] =='no')):
+        return 'No major defects'
+    elif ((df['Structural Defects'] == 'yes') & (df['Health Defects'] =='no')):
+        return 'Major structural defect(s)'
+    elif ((df['Structural Defects'] == 'no') & (df['Health Defects'] =='yes')):
+        return 'Major health defect(s)'
+    elif ((df['Structural Defects'] == 'yes') & (df['Health Defects'] =='yes')):
+        return 'Major structural AND health defect(s)'
+    else:
+        return 'Condition was not assessed'
+
+df_trees['defects'] = df_trees.apply(defect_setup, axis = 1) #Apply the defect_setup fucntion to all rows of the trees dataframe
+    
+def setDefectColour(df):
+    ''' sets a colour name in column defectColour based on the value in column defects.  This is for mapping'''
+    
+    if df['defects'] == 'No major defects':
+        return 'darkgreen'
+
+    elif df['defects'] == 'Major structural defect(s)':
+        return 'yellow'
+    
+    elif df['defects'] == 'Major health defect(s)':
+        return 'greenyellow'
+
+    elif df['defects'] == 'Major structural AND health defect(s)':
+        return 'red'
+    
+    else:
+        return 'black'
+
+# Apply defectColour function to all rows of the trees dataframe
+df_trees['defectColour'] = df_trees.apply(setDefectColour, axis = 1) 
+
+#Read variables from the speices table and add them to the trees table
+df_trees.merge(speciesTable[['species', 'color', 'seRegion']], on="species", how="left", sort=False)
+
+#Record a suitability of very poor for any species that is invasive based on the species table
+df_trees.loc[(df_trees.invasivity =='invasive'), 'suitability'] = 'very poor'
+
+df_trees.merge(speciesTable, how = 'left', on = 'species', sort = False)
+
+# save the 'data' pandas dataframe as a geodataframe
+# df_trees = gpd.GeoDataFrame(df_trees, geometry=gpd.points_from_xy(df_trees.Longitude, df_trees.Latitude)).copy() 
+
+# Save the inventory dates as a string.  Otherwise an error is thrown when mapping
+df_trees['date'] = df_trees['date'].astype(str)
+
+# get the species specific colour from the species table for each entry and create the coloursTable
+colorsTable = pd.read_excel(speciesFile,sheet_name = "colors")
+colorsTable.set_index('taxon', inplace = True)
+
+
+#####################################
+
 df_trees.rename(columns = {'tree_name':'Tree Name', 'date': 'Date', 'block':'Block ID',
     'Tree No':'Tree Number','street_name':'Street','location_code': 'Location Code','ownership_code': 'Ownership Code',
     'crown_width': 'Crown Width','number_of_stems':'Number of Stems','dbh':'DBH',
@@ -353,7 +413,7 @@ df_trees.rename(columns = {'tree_name':'Tree Name', 'date': 'Date', 'block':'Blo
     'tree_conflict':'Conflict with Another Tree','sign_conflict':'Conflict with Traffic Sign', 'family':'Family',
     'genus':'Genus', 'species':'Species', 'Relative Dbh': 'Relative DBH', 'origin':'Native', 'suitability':'Species Suitability',
     'diversity_level':'Diversity Level','invasivity':'Invasivity','X coordinate':'Longitude', 'Y coordinate':'Latitude'
-    }, inplace = True)  
+    }, inplace = True)
 
 if df_trees not in st.session_state:
     st.session_state['df_trees'] = []
