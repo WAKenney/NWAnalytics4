@@ -46,7 +46,8 @@ def getData(fileName):
         df_streets = pd.DataFrame()
 
         try:
-            df_trees = pd.read_excel(fileName, sheet_name = 'trees', header = 0)
+            # df_trees = pd.read_excel(fileName, sheet_name = 'trees', header = 0)
+            df_trees = pd.read_excel(fileName, sheet_name = 0, header = 0)
         except:
             st.error("Ooops something is wrong with your data file!")
 
@@ -54,13 +55,21 @@ def getData(fileName):
     
 df_trees = getData(fileName)
 
+
 @st.cache_data(show_spinner="Loading your street data, please wait ...")
 def get_streets():
-    df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
+    # df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
+    # if df_streets.iat[0,0] == 'street_code':
+    #     df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+    # if df_streets.iat[0,0] == 'street':
+    #     df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+
+    df_streets = pd.read_excel(fileName, sheet_name = 1, header = 0)
     if df_streets.iat[0,0] == 'street_code':
-        df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+        df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
     if df_streets.iat[0,0] == 'street':
-        df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+        df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
+
 
     return df_streets
 
@@ -69,7 +78,7 @@ df_streets = get_streets()
 df_trees.rename(columns = {'Tree Name':'tree_name','Date':'date','Block Id':'block','Block ID':'block','Tree No':'tree_number',
                         'House Number':'house_number',
                         'location':'location_code','Location Code':'location_code',
-                        'ownership':'ownership_code','Ownership code':'ownership_code',
+                        'ownership':'ownership_code','Ownership code':'ownership_code', 'Ownership Code':'ownership_code',
                         'Crown Width':'crown_width','Number of Stems':'number_of_stems','DBH':'dbh',
                         'Hard surface':'hard_surface','Hard Surface':'hard_surface','Ht to base':'height_to_crown_base',
                         'Total Height':'total_height','Reduced Crown':'reduced_crown','Unbalanced Crown':'unbalanced_crown',
@@ -393,9 +402,6 @@ towrite.seek(0)  # reset pointer
 b64 = base64.b64encode(towrite.read()).decode()  # some strings
 linko= f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="summary data.xlsx">Click here to save your data as an Excel file</a>'
 st.markdown(linko, unsafe_allow_html=True)
-
-
-
 
 
 
