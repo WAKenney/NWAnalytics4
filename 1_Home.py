@@ -55,7 +55,7 @@ try:
                 st.error("Ooops something is wrong with your data file!")
 
             return df_trees
-        
+           
     df_trees = getData(fileName)
 
     @st.cache_data(show_spinner="Loading your street data, please wait ...")
@@ -85,6 +85,7 @@ try:
                             'Cable or Brace':'cable_or_brace','Conflict with Wires':'wire_conflict',
                             'Conflict with Sidewalk':'sidewalk_conflict','Conflict with Structure':'structure_conflict',
                             'Conflict with another tree':'tree_conflict','Conflict with Traffic Sign':'sign_conflict'}, inplace = True)
+
 
     dataCols =df_trees.columns
 
@@ -245,7 +246,7 @@ try:
         else:
             return 'no'
 
-    # df_trees['Health Defect']= df_trees.apply(health, axis =1)
+
     df_trees['Health Defects']= df_trees.apply(health, axis =1)
 
 
