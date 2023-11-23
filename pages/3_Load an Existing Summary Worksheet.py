@@ -1,7 +1,17 @@
 import streamlit as st
 import pandas as pd
 
-st.title('Load the SUMMARY data')
+#Create page title
+titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+
+title = 'new_nw_header.png'
+
+titleCol2.image(title, use_column_width=True)
+
+st.subheader('Load an Existing Neighburwoods Summary File')
+
+st.markdown("___")
+
 
 # info_screen = st.empty()
 
