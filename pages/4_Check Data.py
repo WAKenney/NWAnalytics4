@@ -1,6 +1,17 @@
 import streamlit as st
 
-st.title('Check Data')
+#Create page title
+titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+
+title = 'new_nw_header.png'
+
+titleCol2.image(title, use_column_width=True)
+
+st.subheader('Create or Refresh a Neighburwoods Summary File')
+
+st.markdown("___")
+
+
 
 checkData = st.dataframe(st.session_state['df_trees'])
 
@@ -186,4 +197,6 @@ def checkData(chkData):
                         You can filter the columns just as you would in the main table.
         ''')
 
-        st.dataframe(dfCheck)
+        # st.dataframe(dfCheck)
+
+checkData(checkData)
