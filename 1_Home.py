@@ -10,10 +10,6 @@ def create_summary_data():
 
     currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
-    titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
-    title = currentDir + 'NWAnalyticsTitle.jpg'
-    titleCol2.image(title, use_column_width=True)
-
     df_trees = pd.DataFrame()
 
     st.write('<style>div.Widget.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
@@ -428,6 +424,14 @@ def create_summary_data():
         file_name='summary.xlsx',
         mime='application/vnd.ms-excel')
 
+########################################################################
+
+#Create page title
+titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+
+title = 'new_nw_header.png'
+
+titleCol2.image(title, use_column_width=True)
 
 
 def load_text():
