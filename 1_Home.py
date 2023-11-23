@@ -3,12 +3,14 @@ import geopandas as gpd
 import streamlit as st
 import io
 # from io import BytesIO
-import base64
+# import base64
 
 
 st.write('<style>div.Widget.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 
 currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
+
+speciesFile = currentDir + 'NWspecies220522.xlsx'
 
 activeEcodist = '6E-16'
 
@@ -19,7 +21,9 @@ attributeNames = ['reduced_crown', 'unbalanced_crown', 'defoliation',
 
 
 def create_summary_data():
-    
+
+    st.write("Create_summary")
+
     df_trees = pd.DataFrame()
  
     @st.cache_data(show_spinner="Loading the species table, please wait ...")
@@ -29,10 +33,21 @@ def create_summary_data():
         speciesFile = currentDir + 'NWspecies220522.xlsx'
 
         speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
+
+        st.dataframe(speciesTable)
+
+
+        if "speciesTable" not in st.session_state:
+
+            st.session_state['speciesTable'] = []
+
+        st.session_state['speciesTable'] = speciesTable
+
         
         return speciesTable
 
-    # speciesTable = getSpeciesTable()
+
+    speciesTable = getSpeciesTable()
 
 
     @st.cache_data(show_spinner="Loading your data, please wait ...")
@@ -56,9 +71,13 @@ def create_summary_data():
             return df_trees
 
 
-    # df_trees = get_raw_data(fileName)
+    df_trees = get_raw_data(fileName)
 
 
+    st.write('df_trees')
+    st.dataframe(df_trees)
+
+    
     @st.cache_data(show_spinner="Loading your street data, please wait ...")
     def get_streets():
 
@@ -77,7 +96,9 @@ def create_summary_data():
             return df_streets
 
 
-    # df_streets = get_streets()
+    df_streets = get_streets()
+
+    st.dataframe(df_streets)
 
 
     def clean_and_expand_data(df_trees):
@@ -99,6 +120,7 @@ def create_summary_data():
                                 'Conflict with another tree':'tree_conflict','Conflict with Traffic Sign':'sign_conflict'}, inplace = True)
 
         dataCols =df_trees.columns
+
 
         df_streets.rename(columns = {'ADDRESS':'street_code','ADDRESSNAME':'street_name','street':'street_code','street name':'street_name' }, inplace = True)
 
@@ -382,6 +404,7 @@ def create_summary_data():
 
             df_trees['Description'] = df_trees['Description'] + condition
 
+
         condition() # This calls the function condition()
 
 
@@ -476,7 +499,7 @@ def create_summary_data():
             'diversity_level':'Diversity Level','invasivity':'Invasivity','X coordinate':'Longitude', 'Y coordinate':'Latitude'
             }, inplace = True)
 
-        if df_trees not in st.session_state:
+        if 'df_trees' not in st.session_state:
 
             st.session_state['df_trees'] = []
 
@@ -524,51 +547,80 @@ def create_summary_data():
 
     clean_and_expand_data(df_trees)
 
+fileName ='empty'
+
+fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
+    type = ['xlsm', 'xlsx', 'csv'], key = "file_name")
+
+if fileName is not None:
     
+    create_summary_data()
+
+
 
 ########################################################################
 
-#Create page title
-titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+# #Create page title
+# titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 
-title = 'new_nw_header.png'
+# title = 'new_nw_header.png'
 
-titleCol2.image(title, use_column_width=True)
-
-
-def load_text():
-    main_container.write("Load a File")
+# titleCol2.image(title, use_column_width=True)
 
 
-st.markdown('### Select how you want to import your data ')
+# def load_text():
+#     main_container.write("Load a File")
 
-choice_container = st.container()
-main_container = st.empty()
 
-with choice_container:
-    choice1, choice2 = st.columns(2)
+# st.markdown('### Select how you want to import your data ')
 
-create_button = choice1.button("CREATE or Refresh a summary file")
-load_button = choice2.button("LOAD an existing summary file")
+# choice_container = st.container()
+# main_container = st.empty()
 
-with main_container:
+# with choice_container:
+#     choice1, choice2 = st.columns(2)
 
-    if create_button:
+# create_button = choice1.button("CREATE or Refresh a summary file")
+# load_button = choice2.button("LOAD an existing summary file")
+
+# if create_button:
+    
+#     fileName ='empty'
+
+#     fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
+#         type = ['xlsm', 'xlsx', 'csv'], key = "file_name")
+    
+#     if fileName is not None:
         
-        fileName ='empty'
-
-        fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
-            type = ['xlsm', 'xlsx', 'csv'])
+#         create_summary_data()
         
-        if fileName is not None:
+# if load_button:
+    
+#     load_text()
+
+
+
+
+# with main_container:
+
+#     if create_button:
+        
+#         fileName ='empty'
+
+#         fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
+#             type = ['xlsm', 'xlsx', 'csv'], key = "file_name")
+        
+#         if fileName is not None:
             
-            create_summary_data()
+#             create_summary_data()
             
-    if load_button:
+#     if load_button:
         
-        load_text()
+#         load_text()
 
 
+# create_summary_data()
 
+st.header("Session State")
 
 st.write(st.session_state)
