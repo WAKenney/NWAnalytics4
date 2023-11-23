@@ -6,19 +6,23 @@ import io
 import base64
 
 
-df_trees = pd.DataFrame()
+def create_summary_data():
 
-st.title('Neighbourwoods Data Entry and Clean-up')
+    currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
-info_screen = st.empty()
+    titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+    title = currentDir + 'NWAnalyticsTitle.jpg'
+    titleCol2.image(title, use_column_width=True)
 
-st.write('<style>div.Widget.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+    df_trees = pd.DataFrame()
 
-currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
+    st.write('<style>div.Widget.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 
-speciesFile = currentDir + 'NWspecies220522.xlsx'
+    currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
-try:
+    speciesFile = currentDir + 'NWspecies220522.xlsx'
+
+
     @st.cache_data(show_spinner="Loading the species table, please wait ...")
     def getSpeciesTable(): 
         speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
@@ -34,15 +38,13 @@ try:
         'trunk_rot_or_cavity', 'confined_space', 'crack', 'exposed_roots', 'girdling_roots', 'recent_trenching']
 
     fileName ='empty'
-
+    
     fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
         type = ['xlsm', 'xlsx', 'csv'], 
         key ='fileNameKey')
-    
-    info_screen.empty()
 
     @st.cache_data(show_spinner="Loading your data, please wait ...")
-    def getData(fileName):
+    def get_raw_data(fileName):
 
         if fileName is not None:
 
@@ -50,21 +52,30 @@ try:
             df_streets = pd.DataFrame()
 
             try:
-                df_trees = pd.read_excel(fileName, sheet_name = 'trees', header = 0)
+                # df_trees = pd.read_excel(fileName, sheet_name = 'trees', header = 0)
+                df_trees = pd.read_excel(fileName, sheet_name = 0, header = 0)
             except:
                 st.error("Ooops something is wrong with your data file!")
 
             return df_trees
-           
-    df_trees = getData(fileName)
+
+
+    df_trees = get_raw_data(fileName)
 
     @st.cache_data(show_spinner="Loading your street data, please wait ...")
     def get_streets():
-        df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
+        # df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
+        # if df_streets.iat[0,0] == 'street_code':
+        #     df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+        # if df_streets.iat[0,0] == 'street':
+        #     df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+
+        df_streets = pd.read_excel(fileName, sheet_name = 1, header = 0)
         if df_streets.iat[0,0] == 'street_code':
-            df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+            df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
         if df_streets.iat[0,0] == 'street':
-            df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+            df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
+
 
         return df_streets
 
@@ -73,7 +84,7 @@ try:
     df_trees.rename(columns = {'Tree Name':'tree_name','Date':'date','Block Id':'block','Block ID':'block','Tree No':'tree_number',
                             'House Number':'house_number',
                             'location':'location_code','Location Code':'location_code',
-                            'ownership':'ownership_code','Ownership code':'ownership_code',
+                            'ownership':'ownership_code','Ownership code':'ownership_code', 'Ownership Code':'ownership_code',
                             'Crown Width':'crown_width','Number of Stems':'number_of_stems','DBH':'dbh',
                             'Hard surface':'hard_surface','Hard Surface':'hard_surface','Ht to base':'height_to_crown_base',
                             'Total Height':'total_height','Reduced Crown':'reduced_crown','Unbalanced Crown':'unbalanced_crown',
@@ -85,7 +96,6 @@ try:
                             'Cable or Brace':'cable_or_brace','Conflict with Wires':'wire_conflict',
                             'Conflict with Sidewalk':'sidewalk_conflict','Conflict with Structure':'structure_conflict',
                             'Conflict with another tree':'tree_conflict','Conflict with Traffic Sign':'sign_conflict'}, inplace = True)
-
 
     dataCols =df_trees.columns
 
@@ -176,6 +186,7 @@ try:
         else:
             cpa = ((cw/2)**2)*3.14
             # cpa= int(cpa)
+
         return cpa
 
     df_trees['Crown Projection Area (CPA)'] = df_trees['crown_width'].apply(lambda x: (cpa(x)))
@@ -246,7 +257,7 @@ try:
         else:
             return 'no'
 
-
+    # df_trees['Health Defect']= df_trees.apply(health, axis =1)
     df_trees['Health Defects']= df_trees.apply(health, axis =1)
 
 
@@ -390,62 +401,54 @@ try:
 
     st.dataframe(df_trees)
 
+    
+    #Provide an option to save df_trees  AND df-streets to the same workbook
 
-    #Option to save the data checking table as a spreadsheet
-    towrite = io.BytesIO()
-    downloaded_file = df_trees.to_excel(towrite, index=False, header=True, sheet_name = 'summary')
-    towrite.seek(0)  # reset pointer
-    b64 = base64.b64encode(towrite.read()).decode()  # some strings
-    linko= f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="summary data.xlsx">Click here to save your data as an Excel file</a>'
-    st.markdown(linko, unsafe_allow_html=True)
+    # create a buffer to hold the data
+    buffer = io.BytesIO()
 
-except ValueError:
-    info_screen.subheader('Browse for you Neighbourwoods file or drag and drop it into the box below')
+    # create a Pandas Excel writer using the buffer
+    writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
 
+    # write the dataframes to separate sheets in the workbook
+    df_trees.to_excel(writer, sheet_name='trees', index=False)
+    df_streets.to_excel(writer, sheet_name='streets', index=False)
 
+    # save the workbook to the buffer
+    # writer.save()
+    writer.close()
 
+    # reset the buffer position to the beginning
+    buffer.seek(0)
 
-
-
-#####################################
-
-
-# def fixTitles():
-
-#     #  Column titles from the Neighourwoods MS 2.6 workbook
-#     nwWkbkTitles = ['tree index','Tree name', 'Date', 'Block Id', 'Tree No', 'House Number', 'street_code', 'species_code', 'location_code', 
-#     'ownership_code', 'Number of Stems', 'DBH', 'Hard surface', 'Crown Width', 'Ht to base', 'Total Height', 'Reduced Crown', 
-#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
-#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
-#     'Girdling Roots', 'Exposed Roots', 'Recent Trenching', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
-#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'X coordinate', 'Y coordinate']
-
-#     #  Column titles from the Neighourwoods Memento data entry library
-#     mementoTitles = ['Tree name', 'Date', 'Block Id', 'Tree No', 'House Number', 'street_code', 'species_code', 'location', 
-#     'ownership', 'Number of Stems', 'DBH', 'Hard surface', 'Crown Width', 'Ht to base', 'Total Height', 'Reduced Crown', 
-#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
-#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
-#     'Girdling Roots', '', 'Recent Trenching', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
-#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'xy', 'Photo 1', 'Photo 2']
-
-#     #  Column titles from the Neighbourwoods_Data_ENTRY_141221.xlsm workbook
-#     nwInputTitles = ['Date(dd/mm/yy)', 'Block', 'Tree No', 'House Number', 'Street Code', 'Species Code', 'Location Code', 
-#     'Ownership Code', 'No. of Stems', 'DBH (cm)', '% Hard surface', 'Crown Width (m)', 'Ht to base of crown.', 'Total Height (m)', 'Reduced Crown', 
-#     'Unbalanced Crown', 'Defoliation', 'Weak or Yellow Foliage', 'Dead or Broken Branch', 'Lean', 'Poor Branch Attachment', 
-#     'Branch Scars', 'Trunk Scars', 'Conks', 'Rot or Cavity - Branch', 'Rot or Cavity - Trunk', 'Confined Space', 'Crack', 
-#     'Girdling Roots', 'Recent Trenching', 'Exposed Roots', 'Cable or Brace', 'Conflict with Wires', 'Conflict with Sidewalk', 
-#     'Conflict with Structure', 'Conflict with another tree', 'Conflict with Traffic Sign', 'Comments', 'X coordinate', 'Y coordinate']
-
-#     dfTitles = df_trees.columns
-
-#     for nwWkbkTitle in nwWkbkTitles:
-#         if nwWkbkTitle not in dfTitles:
-#             st.warning("Ooops ", nwWkbkTitle, " isn't a column in your dataset!")
-
-#         if inputType == 'Neighourwoods Memento data entry library':
-#             st.info ('You have selected "Neighourwoods Memento data entry library" as your input data type')
-#     else:
-#         st.info ('You have selected "Neighbourwoods_Data_ENTRY.xlsm workbook" as your input data type')    
+    # create a download link for the workbook
+    st.download_button(
+        label='Download Data',
+        data=buffer,
+        file_name='summary.xlsx',
+        mime='application/vnd.ms-excel')
 
 
 
+def load_text():
+    main_container.write("Load a File")
+
+
+st.markdown('### Select how you want to import your data ')
+
+choice_container = st.container()
+main_container = st.empty()
+
+with choice_container:
+    choice1, choice2 = st.columns(2)
+
+create_button = choice1.button("CREATE or Refresh a summary file")
+load_button = choice2.button("LOAD an existing summary file")
+
+with main_container:
+
+    if create_button:
+        create_summary_data()
+
+    if load_button:
+        load_text()
