@@ -1,7 +1,10 @@
+import io
 import pandas as pd
 import geopandas as gpd
 import streamlit as st
-import io
+import datetime
+
+
 # from io import BytesIO
 # import base64
 
@@ -34,6 +37,9 @@ st.markdown("___")
 
 
 def create_summary_data():
+    '''This function adds various values to the inventory input datasheet that are used in the various analyses that follow.  
+    This is the MAIN finction for 2_Create or Refresh Summary Worksheet.  The output is df_trees which is saved in the st.session_state for usein other
+    apps of this collection.'''
 
     df_trees = pd.DataFrame()
  
@@ -189,9 +195,9 @@ def create_summary_data():
 
 
         def getEcodistricts():
-            
+
             gpd_ecodistricts = gpd.read_file(r"https://github.com/WAKenney/NWAnalytics/blob/master/OntarioEcodistricts.gpkg")
-            
+              
             return gpd_ecodistricts
 
 
@@ -495,7 +501,8 @@ def create_summary_data():
 
 
         df_trees.rename(columns = {'tree_name':'Tree Name', 'date': 'Date', 'block':'Block ID',
-            'Tree No':'Tree Number','street_name':'Street','location_code': 'Location Code','ownership_code': 'Ownership Code',
+            'Tree No':'Tree Number', 'tree_number':'Tree Number', 'street_name':'Street','house_number':'House Number', 'location_code':'Location Code',
+            'ownership_code': 'Ownership Code','street_code':'Street Code',
             'crown_width': 'Crown Width','number_of_stems':'Number of Stems','dbh':'DBH',
             'hard_surface':'Hard Surface','height_to_crown_base': 'Ht to Crown Base', 'total_height':'Total Height',
             'reduced_crown':'Reduced Crown','unbalanced_crown':'Unbalanced Crown',
@@ -538,6 +545,10 @@ def create_summary_data():
         # reset the buffer position to the beginning
         buffer.seek(0)
 
+        now = datetime.datetime.now()
+
+        date_stamp =now.strftime("%d%m%y")
+
         # create a download link for the workbook
         st.download_button(
 
@@ -545,7 +556,7 @@ def create_summary_data():
 
             data=buffer,
 
-            file_name='summary.xlsx',
+            file_name='summary-' + date_stamp +'xlsx',
 
             mime='application/vnd.ms-excel')
 
@@ -557,6 +568,7 @@ def create_summary_data():
     df_streets = get_streets()
 
     clean_and_expand_data(df_trees)
+
 
 fileName ='empty'
 
