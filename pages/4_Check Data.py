@@ -15,14 +15,14 @@ st.markdown("___")
 
 checkData = st.dataframe(st.session_state['df_trees'])
 
-def checkData(chkData):
+def checkData(df):
 
     with st.spinner(text = 'Checking your data, please wait...'):
 
         # Older versions of the data didn't include surface roots.  To avoid crashing the app, this function checks to see if surface roots are in the data.
         # If not, then this attribute is removed from the list of column names (cols)
 
-        df = chkData.copy()
+        # df = chkData.copy()
 
         if df['exposed_roots'].isnull().all():
 

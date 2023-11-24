@@ -94,4 +94,4 @@ def mapItFolium(mapData):
     #Add the legend saved at github called mapLegend.png
     # st.image(currentDir + 'mapLegend.png')
 
-mapItFolium(st.session_state['selected_df'])
+mapItFolium(st.session_state['df_trees'])
