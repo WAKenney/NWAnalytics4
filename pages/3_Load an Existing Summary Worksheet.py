@@ -53,8 +53,6 @@ def getData(fileName):
 
         if 'Description' in df.columns:
 
-            st.write('Yup its there!')
-
             return df
 
         else:
