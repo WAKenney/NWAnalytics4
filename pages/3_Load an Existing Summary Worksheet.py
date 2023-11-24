@@ -37,13 +37,31 @@ def getData(fileName):
         df = pd.DataFrame()
 
         try:
-            df = pd.read_excel(fileName, sheet_name = "summary", header = 0)
-        
+            df = pd.read_excel(fileName, sheet_name = "trees", header = 0)
+ 
         except ValueError:
-            st.write("Oops, are you sure your file is a Neighbourwoods SUMMARY file with a worksheet called 'summary'?")
 
-        return df
+            try:
 
+                df = pd.read_excel(fileName, sheet_name = "summary", header = 0)
+
+            except Exception as e:
+
+                st.error(e)
+
+                # ("Oops, are you sure your file is a Neighbourwoods SUMMARY file with a worksheet called 'summary'?")
+
+        if 'Description' in df.columns:
+
+            st.write('Yup its there!')
+
+            return df
+
+        else:
+            
+            st.warning("Uh oh! The file you selected doesn't appear to be a SUMMARY file. You may have to run the 'Create or Refresh' function first.")
+             
+            
 def fix_column_names(df):
     '''Standardize column names to lower case and hyphenated (no spaces) as well as correct various 
     different spelling of names.'''
