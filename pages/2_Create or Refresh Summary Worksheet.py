@@ -3,6 +3,7 @@ import pandas as pd
 import geopandas as gpd
 import streamlit as st
 import datetime
+import pytz
 
 
 # from io import BytesIO
@@ -545,9 +546,14 @@ def create_summary_data():
         # reset the buffer position to the beginning
         buffer.seek(0)
 
-        now = datetime.datetime.now()
+        # Set timezone
+        timezone = pytz.timezone('America/Toronto')
 
-        date_stamp =now.strftime("%d%m%y")
+        # Get the current local time
+        now = datetime.datetime.now(timezone)
+
+        # Print the current local time
+        date_time = now.strftime("%d%m%Y%H%M")
 
         # create a download link for the workbook
         st.download_button(
@@ -556,7 +562,7 @@ def create_summary_data():
 
             data=buffer,
 
-            file_name='summary-' + date_stamp +'xlsx',
+            file_name='summary' + date_time +'.xlsx',
 
             mime='application/vnd.ms-excel')
 
