@@ -80,7 +80,7 @@ def create_summary_data():
 
             try:
 
-                df_trees = pd.read_excel(fileName, sheet_name = 0, header = 0)
+                df_trees = pd.read_excel(fileName, sheet_name = 'trees', header = 0)
             
             except:
             
@@ -103,13 +103,13 @@ def create_summary_data():
 
             df_streets = pd.DataFrame()
 
-            df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
+            df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
 
-            if df_streets.iat[0,0] == 'street_code':
-                df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
+            # if df_streets.iat[0,0] == 'street_code':
+            #     df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
 
-            if df_streets.iat[0,0] == 'street':
-                df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
+            # if df_streets.iat[0,0] == 'street':
+            #     df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
 
             return df_streets
 
