@@ -11,11 +11,35 @@ st.subheader('Create or Refresh a Neighburwoods Summary File')
 
 st.markdown("___")
 
+st.write(st.session_state['df_trees'].columns)
 
+df_trees = st.session_state['df_trees']
 
-checkData = st.dataframe(st.session_state['df_trees'])
+# df_trees.rename(columns = {'Tree Name':'tree_name','Date':'date','Block Id':'block','Block ID':'block','Tree No':'tree_number',
+#                                 'House Number':'house_number',
+#                                 'location':'location_code','Location Code':'location_code',
+#                                 'ownership':'ownership_code','Ownership code':'ownership_code', 'Ownership Code':'ownership_code',
+#                                 'Crown Width':'crown_width','Number of Stems':'number_of_stems','DBH':'dbh',
+#                                 'Hard surface':'hard_surface','Hard Surface':'hard_surface','Ht to base':'height_to_crown_base',
+#                                 'Total Height':'total_height','Reduced Crown':'reduced_crown','Unbalanced Crown':'unbalanced_crown',
+#                                 'Defoliation':'defoliation','Weak or Yellow Foliage':'weak_or_yellow_foliage','Weak or Yellowing Foliage':'weak_or_yellow_foliage',
+#                                 'Dead or Broken Branch':'dead_or_broken_branch','Lean':'lean','Poor Branch Attachment':'poor_branch_attachment',
+#                                 'Branch Scars':'branch_scars','Trunk Scars':'trunk_scars','Conks':'conks','Rot or Cavity - Branch':'branch_rot_or_cavity',
+#                                 'Rot or Cavity - Trunk':'trunk_rot_or_cavity','Confined Space':'confined_space',
+#                                 'Crack':'crack','Girdling Roots':'girdling_roots', 'Exposed Roots': 'exposed_roots', 'Recent Trenching':'recent_trenching',
+#                                 'Cable or Brace':'cable_or_brace','Conflict with Wires':'wire_conflict',
+#                                 'Conflict with Sidewalk':'sidewalk_conflict','Conflict with Structure':'structure_conflict',
+#                                 'Conflict with another tree':'tree_conflict','Conflict with Traffic Sign':'sign_conflict',
+#                                 'genus':'Genus', 'family':'Family', 'cpa':'Crown Projection', 'rdbh':'Relative DBH', 
+#                                 'rdbh_class':'Relative DBH Class', 'dbh_class':'DBH Class', 'native':'Native', 
+#                                 'color':'Color', 'health':'Health Defects', 'structural':'Structural Defects', 
+#                                 'diversity_level':'Diversity Level', 'invasivity':'Invasivity', 
+#                                 'comments':'Comments', 'suitability':'Species Suitability', 
+#                                 'seRegion':'Site Region', 'description':'Description', 'geometry':'Geometry'}, inplace = True)
 
-def checkData(df):
+def check_data(df):
+    '''Checks df_trees for anomolies and adds a column showing errors that may crash the program
+    and a column with warnings that may impact the results'''
 
     with st.spinner(text = 'Checking your data, please wait...'):
 
@@ -199,4 +223,8 @@ def checkData(df):
 
         # st.dataframe(dfCheck)
 
-checkData(checkData)
+if "df_trees" not in st.session_state:
+
+    st.error("You haven't loaded a file yet.  Either go to the 'Create or Refresh...' function in the side bar or the ' Load and Existing...")
+
+check_data(df_trees)
