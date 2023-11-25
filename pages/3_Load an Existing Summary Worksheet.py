@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-from streamlit_extras.let_it_rain import rain
+from streamlit_extras.let_it_rain import rain 
+
 
 #Create page title
 titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
@@ -55,7 +56,7 @@ def getData(fileName):
 
         else:
             
-            st.warning("Uh oh! The file you selected doesn't appear to be a SUMMARY file. You may have to run the 'Create or Refresh' function first.")
+            st.warning("Uh oh! The file you selected doesn't appear to be a SUMMARY file. You may have to run the 'Create or Refresh Summary Worksheet' function first.")
 
              
         
