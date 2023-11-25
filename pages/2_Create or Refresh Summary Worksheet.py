@@ -31,7 +31,7 @@ title = 'new_nw_header.png'
 
 titleCol2.image(title, use_column_width=True)
 
-st.subheader('Create or Refresh a Neighburwoods Summary File')
+st.subheader('Create or Refresh a Neighbourwoods Summary File')
 
 st.markdown("___")
 
