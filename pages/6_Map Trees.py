@@ -1,7 +1,10 @@
-import streamlit as st
-import pandas as pd
 import folium
+from folium.plugins import Fullscreen
+import pandas as pd
+import streamlit as st
 from streamlit_folium import folium_static
+
+
 
 #Create page title
 titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
