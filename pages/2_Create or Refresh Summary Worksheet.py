@@ -103,7 +103,10 @@ def create_summary_data():
 
             df_streets = pd.DataFrame()
 
-            df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 1)
+            df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
+
+            df_trees.rename(columns = {'ADDRESS' : 'street_code', 'ADDRESSNAME' : 'street_name',
+                                       'Street Code':'street_code','Street Name':'street_name'})
 
             # if df_streets.iat[0,0] == 'street_code':
             #     df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
@@ -115,8 +118,6 @@ def create_summary_data():
 
 
     df_streets = get_streets()
-
-    # st.dataframe(df_streets)
 
 
     def clean_and_expand_data(df_trees):
@@ -165,9 +166,7 @@ def create_summary_data():
                                    'Health Defects' : 'health', 'Description' : 'description', 'Defects' : 'defects', 
                                    'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'},
                                    inplace = True)
-
-
-
+       
 
         dataCols =df_trees.columns
 
