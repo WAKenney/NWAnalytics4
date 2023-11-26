@@ -54,7 +54,7 @@ def check_data(df):
 
         if df['exposed_roots'].isnull().all():
 
-            cols = ['tree_name','latitude', 'longitude', 'block', 'species', 'street_name', 'address', 'location_code', 'ownership_code', 'number_of_stems', 'dbh',
+            cols = ['tree_name','latitude', 'longitude', 'block', 'species', 'address', 'location_code', 'ownership_code', 'number_of_stems', 'dbh',
             'hard_surface', 'crown_width', 'height_to_crown_base', 'total_height', 'reduced_crown', 'unbalanced_crown', 'defoliation',
             'weak_or_yellow_foliage', 'dead_or_broken_branch', 'lean', 'poor_branch_attachment', 'branch_scars', 'trunk_scars', 'conks',
             'branch_rot_or_cavity', 'trunk_rot_or_cavity', 'confined_space','crack', 'girdling_roots', 'recent_trenching', 'cable_or_brace',
@@ -63,7 +63,7 @@ def check_data(df):
             st.write('It appears that you did not record exposed roots for any entries.  This attribute will be ignored in the "check data" function.')
 
         else:
-            cols = ['tree_name','latitude', 'longitude', 'block', 'species', 'street_name', 'address', 'location_code', 'ownership_code', 'number_of_stems', 'dbh',
+            cols = ['tree_name','latitude', 'longitude', 'block', 'species', 'address', 'location_code', 'ownership_code', 'number_of_stems', 'dbh',
             'hard_surface', 'crown_width', 'height_to_crown_base', 'total_height', 'reduced_crown', 'unbalanced_crown', 'defoliation',
             'weak_or_yellow_foliage', 'dead_or_broken_branch', 'lean', 'poor_branch_attachment', 'branch_scars', 'trunk_scars', 'conks',
             'branch_rot_or_cavity', 'trunk_rot_or_cavity', 'confined_space','crack', 'girdling_roots', 'exposed_roots', 'recent_trenching', 'cable_or_brace',
