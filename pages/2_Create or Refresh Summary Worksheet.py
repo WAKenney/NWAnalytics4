@@ -161,7 +161,7 @@ def create_summary_data():
                                    'Street' : 'street', 'Family' : 'family', 'Genus' : 'genus', 'Species' : 'species', 
                                    'Invasivity' : 'invasivity', 'Species Suitability' : 'suitability', 
                                    'Diversity Level' : 'diversity_level', 'Native' : 'native', 'Crown Projection Area (CPA)' : 'cpa', 
-                                   'Address' : 'address', 'DBH Class' : 'dbh_class', 'Relative DBH' : 'rdbh', 
+                                   'Address' : 'address', 'DBH Class' : 'dbh_class', 'Relative DBH' : 'rdbh','Relative Dbh' : 'rdbh', 
                                    'Relative DBH Class' : 'rdbh_class', 'Structural Defects' : 'structural', 
                                    'Health Defects' : 'health', 'Description' : 'description', 'Defects' : 'defects', 
                                    'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'},
@@ -260,7 +260,7 @@ def create_summary_data():
 
         df_trees = origin(df_trees)
 
-
+        
         def cpa(cw):
 
             '''
