@@ -129,13 +129,22 @@ if df_trees is not None:
     
     st.dataframe(df_trees)
 
-    if df_trees not in st.session_state:
+    if "df_trees" not in st.session_state:
 
         st.session_state['df_trees'] = []
 
     st.session_state['df_trees'] = df_trees
 
+    
+    total_tree_count = df_trees.shape[0]
+
+
+    if "total_tree_count" not in st.session_state:
+
+        st.session_state['total_tree_count'] = []
+
+    st.session_state['total_tree_count'] = total_tree_count
+
     # let_it_rain()
 
-    screen1.markdown('### Your data is loaded.  You can now proceed with the mapping and analyses by selecting a function from the sidebar at the left.')
-
+    screen1.markdown(f'### Your data is loaded with {total_tree_count} entries . You can now proceed with the mapping and analyses by selecting a function from the sidebar at the left.')
