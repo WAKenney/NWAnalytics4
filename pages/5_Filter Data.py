@@ -1,7 +1,21 @@
 import streamlit as st
 import pandas as pd
+from pandas.api.types import (
+    is_categorical_dtype,
+    is_datetime64_any_dtype,
+    is_numeric_dtype,
+    is_object_dtype,)
 
-st.title("Filter the Data")
+#Create page title
+titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+
+title = 'new_nw_header.png'
+
+titleCol2.image(title, use_column_width=True)
+
+st.subheader('Create or Refresh a Neighbourwoods Summary File')
+
+st.markdown("___")
 
 with st.expander("Click here for hints on filtering your data", expanded=False):
     st.markdown("""The table below shows your inventory data 
@@ -18,10 +32,9 @@ with st.expander("Click here for hints on filtering your data", expanded=False):
     To clear all filters and return to the full data set, click on the Update button.
     Note: that you can save your filtered data as an Excel workbook by clicking on the link at the bottom of the FILTERED data table.""")
 
-#Show the full unfiltered dataframe df_trees
-st.dataframe(st.session_state['df_trees'])
 
-def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+# def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+def filter_dataframe(df):
     """
     Adds a UI on top of a dataframe to let viewers filter columns
 
@@ -106,7 +119,30 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 select_df = filter_dataframe(st.session_state['df_trees'])
 
 #Store the filtered data (select_df in the session_state as select_df)
+if select_df not in st.session_state:
+
+    st.session_state['select_df'] = []
+
 st.session_state['select_df'] = select_df
 
-#show the filtered dataframe select_df
+#Add the number of entries in select_df to session_state
+select_tree_count = select_df.shape[0]
+
+if select_df not in st.session_state:
+
+    st.session_state['select_tree_count'] = []
+
+st.session_state['select_tree_count'] = select_tree_count
+
+#show the filtered dataframe select_df and the number of entries
+
+if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
+    st.markdown(f"### There are {st.session_state['select_tree_count']} entries currently loaded. ")
+else:
+    st.write(f"There are {st.session_state['total_tree_count']} entries currently loaded. ")
+
+# st.write(f"You have {select_tree_count:,} trees of the in your filtered database.")
+
 st.dataframe(select_df)
+
+
