@@ -85,15 +85,14 @@ def create_summary_data():
             except:
             
                 st.error("Ooops something is wrong with your data file!")
+            
+            save_data_screen = st.empty()
 
             return df_trees
 
 
     df_trees = get_raw_data(fileName)
 
-
-    # st.write('df_trees')
-    # st.dataframe(df_trees)
 
     
     @st.cache_data(show_spinner="Loading your street data, please wait ...")
@@ -121,24 +120,7 @@ def create_summary_data():
 
 
     def clean_and_expand_data(df_trees):
-
-        # df_trees.rename(columns = {'Tree Name':'tree_name','Date':'date','Block Id':'block','Block ID':'block','Tree No':'tree_number',
-        #                         'House Number':'house_number',
-        #                         'location':'location_code','Location Code':'location_code',
-        #                         'ownership':'ownership_code','Ownership code':'ownership_code', 'Ownership Code':'ownership_code',
-        #                         'Crown Width':'crown_width','Number of Stems':'number_of_stems','DBH':'dbh',
-        #                         'Hard surface':'hard_surface','Hard Surface':'hard_surface','Ht to base':'height_to_crown_base',
-        #                         'Total Height':'total_height','Reduced Crown':'reduced_crown','Unbalanced Crown':'unbalanced_crown',
-        #                         'Defoliation':'defoliation','Weak or Yellow Foliage':'weak_or_yellow_foliage','Weak or Yellowing Foliage':'weak_or_yellow_foliage',
-        #                         'Dead or Broken Branch':'dead_or_broken_branch','Lean':'lean','Poor Branch Attachment':'poor_branch_attachment',
-        #                         'Branch Scars':'branch_scars','Trunk Scars':'trunk_scars','Conks':'conks','Rot or Cavity - Branch':'branch_rot_or_cavity',
-        #                         'Rot or Cavity - Trunk':'trunk_rot_or_cavity','Confined Space':'confined_space',
-        #                         'Crack':'crack','Girdling Roots':'girdling_roots', 'Exposed Roots': 'exposed_roots', 'Recent Trenching':'recent_trenching',
-        #                         'Cable or Brace':'cable_or_brace','Conflict with Wires':'wire_conflict',
-        #                         'Conflict with Sidewalk':'sidewalk_conflict','Conflict with Structure':'structure_conflict',
-        #                         'Conflict with another tree':'tree_conflict','Conflict with Traffic Sign':'sign_conflict'}, inplace = True)
-
-
+       
         df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block',
                                    'Tree Number' : 'tree_number', 'House Number' : 'house_number', 'Street Code' : 'street_code', 
                                    'Species Code' : 'species_code', 'Location Code' : 'location_code', 'location':'location_code', 
@@ -169,7 +151,6 @@ def create_summary_data():
        
 
         dataCols =df_trees.columns
-
 
         df_streets.rename(columns = {'ADDRESS':'street_code','ADDRESSNAME':'street_name','street':'street_code','street name':'street_name' }, inplace = True)
 
@@ -208,12 +189,6 @@ def create_summary_data():
             df_trees.insert(30,"exposed_roots",'')
 
         cols = df_trees.columns
-
-        # def getSpeciesTable(): 
-        #     speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
-        #     return speciesTable
-
-        # speciesTable = getSpeciesTable()
 
 
         def getOrigin():
@@ -357,8 +332,9 @@ def create_summary_data():
 
                 return 'no'
 
-        # df_trees['Structural Defect']= df_trees.apply(structural, axis =1)
+
         df_trees['Structural Defects']= df_trees.apply(structural, axis =1)
+
 
         def health(df):
 
@@ -390,7 +366,7 @@ def create_summary_data():
 
                 return 'no'
 
-        # df_trees['Health Defect']= df_trees.apply(health, axis =1)
+
         df_trees['Health Defects']= df_trees.apply(health, axis =1)
 
 
@@ -532,23 +508,6 @@ def create_summary_data():
         colorsTable.set_index('taxon', inplace = True)
 
 
-        # df_trees.rename(columns = {'tree_name':'Tree Name', 'date': 'Date', 'block':'Block ID',
-        #     'Tree No':'Tree Number', 'tree_number':'Tree Number', 'street_name':'Street','house_number':'House Number', 'location_code':'Location Code',
-        #     'ownership_code': 'Ownership Code','street_code':'Street Code',
-        #     'crown_width': 'Crown Width','number_of_stems':'Number of Stems','dbh':'DBH',
-        #     'hard_surface':'Hard Surface','height_to_crown_base': 'Ht to Crown Base', 'total_height':'Total Height',
-        #     'reduced_crown':'Reduced Crown','unbalanced_crown':'Unbalanced Crown',
-        #     'defoliation':'Defoliation','weak_or_yellow_foliage':'Weak or Yellowing Foliage','dead_or_broken_branch':'Dead or Broken Branch',
-        #     'lean':'Lean','poor_branch_attachment':'Poor Branch Attachment','branch_scars':'Branch Scars','trunk_scars':'Trunk Scars',
-        #     'conks':'Conks','branch_rot_or_cavity':'Rot or Cavity - Branch','trunk_rot_or_cavity':'Rot or Cavity - Trunk',
-        #     'confined_space':'Confined Space','crack':'Crack','girdling_roots':'Girdling Roots', 'exposed_roots':'Exposed Roots',
-        #     'recent_trenching':'Recent Trenching','cable_or_brace':'Cable or Brace','wire_conflict':'Conflict with Wires',
-        #     'sidewalk_conflict':'Conflict with Sidewalk','structure_conflict':'Conflict with Structure',
-        #     'tree_conflict':'Conflict with Another Tree','sign_conflict':'Conflict with Traffic Sign', 'family':'Family',
-        #     'genus':'Genus', 'species':'Species', 'Relative Dbh': 'Relative DBH', 'origin':'Native', 'suitability':'Species Suitability',
-        #     'diversity_level':'Diversity Level','invasivity':'Invasivity','X coordinate':'Longitude', 'Y coordinate':'Latitude'
-        #     }, inplace = True)
-
         df_trees.rename(columns = {'tree_name' : 'Tree Name', 'date' : 'Date', 'block' : 'Block ID', 'tree_number' : 'Tree Number', 
                                    'house_number' : 'House Number', 'street_code' : 'Street Code', 'species_code' : 'Species Code', 
                                    'location_code' : 'Location Code', 'ownership_code' : 'Ownership Code', 
@@ -585,6 +544,7 @@ def create_summary_data():
         st.session_state['df_trees'] = df_trees
 
         st.dataframe(df_trees, column_config={'defectColour': None})
+
 
         
         #Provide an option to save df_trees  AND df-streets to the same workbook
@@ -644,58 +604,3 @@ fileName = st.file_uploader("Browse for or drag and drop the name of your Neighb
 if fileName is not None:
     
     create_summary_data()
-
-
-
-########################################################################
-
-
-# def load_text():
-#     main_container.write("Load a File")
-
-
-# st.markdown('### Select how you want to import your data ')
-
-# choice_container = st.container()
-# main_container = st.empty()
-
-# with choice_container:
-#     choice1, choice2 = st.columns(2)
-
-# create_button = choice1.button("CREATE or Refresh a summary file")
-# load_button = choice2.button("LOAD an existing summary file")
-
-# if create_button:
-    
-#     fileName ='empty'
-
-#     fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
-#         type = ['xlsm', 'xlsx', 'csv'], key = "file_name")
-    
-#     if fileName is not None:
-        
-#         create_summary_data()
-        
-# if load_button:
-    
-#     load_text()
-
-
-
-
-# with main_container:
-
-#     if create_button:
-        
-#         fileName ='empty'
-
-#         fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
-#             type = ['xlsm', 'xlsx', 'csv'], key = "file_name")
-        
-#         if fileName is not None:
-            
-#             create_summary_data()
-            
-#     if load_button:
-        
-#         load_text()
