@@ -17,6 +17,13 @@ st.subheader('Create or Refresh a Neighbourwoods Summary File')
 
 st.markdown("___")
 
+screen1 = st.empty()
+screen2 = st.empty()
+screen3 = st.empty()
+
+st.markdown("___")
+
+
 with st.expander("Click here for hints on filtering your data", expanded=False):
     st.markdown("""The table below shows your inventory data.  To filter the data you must first click on the 'Add filters' check box."""
     )
@@ -124,6 +131,20 @@ st.session_state['select_tree_count'] = select_tree_count
 
 #show the filtered dataframe select_df and the number of entries
 
-st.dataframe(select_df)
+if "select_df" in st.session_state:
+    
+    if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
 
+        screen1.markdown(f"#### The map shows the :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
+
+        st.session_state['select_df']
+
+    else:
+
+        screen1.markdown(f"#### The map shows ALL :red[{st.session_state['total_tree_count']}] entries. ")
+        st.session_state['df_trees']
+
+else:
+
+    st.session_state['df_trees']
 
