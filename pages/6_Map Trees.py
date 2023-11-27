@@ -102,7 +102,7 @@ def mapItFolium(mapData):
     # st.image(currentDir + 'mapLegend.png')
 
 if "select_df" in st.session_state:
-    
+      
     if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
 
         screen1.markdown(f"#### The map shows the :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
