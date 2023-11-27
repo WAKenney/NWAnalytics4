@@ -17,15 +17,19 @@ st.subheader('Map the Trees')
 
 st.markdown("___")
 
+screen1 = st.empty()
+screen2 = st.empty()
+screen3 = st.empty()
+
+st.markdown("___")
+
+main_screen = st.empty()
 
 def mapItFolium(mapData):
 
     '''Generates a folium map using the selected dataframe
     '''
-    
-    st.markdown("___")
-    
-    
+
     pointSizeSlider = st.slider('Move the slider to adjust the point size', min_value = 2, max_value = 20, value =4)
         
     if mapData.empty:
@@ -92,9 +96,25 @@ def mapItFolium(mapData):
     folium.LayerControl().add_to(treeMap)
     
     # Show the map in Streamlit
+
     folium_static(treeMap)
 
     #Add the legend saved at github called mapLegend.png
     # st.image(currentDir + 'mapLegend.png')
 
-mapItFolium(st.session_state['df_trees'])
+if "select_df" in st.session_state:
+    
+    if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
+
+        screen1.markdown(f"#### The map shows the :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
+
+        mapItFolium(st.session_state['select_df'])
+
+    else:
+
+        screen1.markdown(f"#### The map shows ALL :red[{st.session_state['total_tree_count']}] entries. ")
+        mapItFolium(st.session_state['df_trees'])
+
+else:
+
+    mapItFolium(st.session_state['df_trees'])
