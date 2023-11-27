@@ -1,6 +1,5 @@
 import folium
 from folium.plugins import Fullscreen
-import pandas as pd
 import streamlit as st
 from streamlit_folium import folium_static
 
@@ -118,3 +117,5 @@ if "select_df" in st.session_state:
 else:
 
     mapItFolium(st.session_state['df_trees'])
+
+# End-of-file (EOF)
