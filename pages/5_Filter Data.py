@@ -39,7 +39,7 @@ def filter_dataframe(df):
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify = st.checkbox("Add filters")
+    modify = st.checkbox("Check the box to start the filter.  Uncheck it to return to ALL entries.")
 
     if not modify:
         return df
