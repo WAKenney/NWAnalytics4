@@ -124,13 +124,6 @@ st.session_state['select_tree_count'] = select_tree_count
 
 #show the filtered dataframe select_df and the number of entries
 
-if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
-    st.markdown(f"### There are {st.session_state['select_tree_count']} entries currently loaded. ")
-else:
-    st.write(f"There are {st.session_state['total_tree_count']} entries currently loaded. ")
-
-# st.write(f"You have {select_tree_count:,} trees of the in your filtered database.")
-
 st.dataframe(select_df)
 
 
