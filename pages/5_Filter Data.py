@@ -25,7 +25,8 @@ st.markdown("___")
 
 
 with st.expander("Click here for hints on filtering your data", expanded=False):
-    st.markdown("""The table below shows your inventory data.  To filter the data you must first click on the 'Add filters' check box."""
+    st.markdown("""The table below shows your inventory data.\
+                  To filter the data you must first click on the 'Add filters' check box."""
     )
 # def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 def filter_dataframe(df):
