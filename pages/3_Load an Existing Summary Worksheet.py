@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-# from streamlit_extras.let_it_rain import rain 
+from streamlit_extras.let_it_rain import rain 
+
 
 
 #Create page title
@@ -115,8 +116,8 @@ def fix_column_names(df):
     #                             'DBH Class':'dbh_class','Native':'native','Species Suitability':'suitability','Structural Defect':'structural', 
     #                             'Health Defect':'health'})
 
-# def let_it_rain():
-#     rain(emoji="🌳", font_size=40, falling_speed=3, animation_length=0.75)
+def let_it_rain():
+    rain(emoji="🌳", font_size=40, falling_speed=3, animation_length=0.75)
 
 
 df_trees = getData(fileName)
@@ -145,6 +146,6 @@ if df_trees is not None:
 
     st.session_state['total_tree_count'] = total_tree_count
 
-    # let_it_rain()
+    let_it_rain()
 
     screen1.markdown(f'### Your data is loaded with {total_tree_count} entries . You can now proceed with the mapping and analyses by selecting a function from the sidebar at the left.')
