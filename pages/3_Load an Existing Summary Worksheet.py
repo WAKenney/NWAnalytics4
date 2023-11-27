@@ -59,7 +59,6 @@ def getData(fileName):
             
             st.warning("Uh oh! The file you selected doesn't appear to be a SUMMARY file. You may have to run the 'Create or Refresh Summary Worksheet' function first.")
 
-             
         
 def fix_column_names(df):
     '''Standardize column names to lower case and hyphenated (no spaces) as well as correct various 
@@ -94,30 +93,8 @@ def fix_column_names(df):
 
 
 
-
-    # return df.rename(columns = {'Tree Name':'tree_name','Description':'description','Longitude':'longitude',
-    #                             'Latitude':'latitude','Date':'date','Block ID':'block','Tree Number':'tree_number',
-    #                             'Species':'species','Genus':'genus','Family':'family','Street':'street',
-    #                             'Address':'address','Location Code':'location_code','Ownership Code':'ownership_code',
-    #                             'Crown Width':'crown_width','Number of Stems':'number_of_stems','DBH':'dbh',
-    #                             'Hard Surface':'hard_surface','Ht to Crown Base':'height_to_crown_base',
-    #                             'Total Height':'total_height','Reduced Crown':'reduced_crown','Unbalanced Crown':'unbalanced_crown',
-    #                             'Defoliation':'defoliation','Weak or Yellowing Foliage':'weak_or_yellow_foliage',
-    #                             'Dead or Broken Branch':'dead_or_broken_branch','Lean':'lean','Poor Branch Attachment':'poor_branch_attachment',
-    #                             'Branch Scars':'branch_scars','Trunk Scars':'trunk_scars','Conks':'conks','Rot or Cavity - Branch':'branch_rot_or_cavity',
-    #                             'Rot or Cavity - Trunk':'trunk_rot_or_cavity','Confined Space':'confined_space',
-    #                             'Crack':'crack','Girdling Roots':'girdling_roots', 'Exposed Roots': 'exposed_roots', 'Recent Trenching':'recent_trenching',
-    #                             'Cable or Brace':'cable_or_brace','Conflict with Wires':'wire_conflict',
-    #                             'Conflict with Sidewalk':'sidewalk_conflict','Conflict with Structure':'structure_conflict',
-    #                             'Conflict with Another Tree':'tree_conflict','Conflict with Traffic Sign':'sign_conflict',
-    #                             'Comments':'comments', 'Total Demerits':'demerits','Simple Rating':'simple_rating',
-    #                             'Crown Projection Area (CPA)':'cpa', 'Relative DBH':'rdbh','Relative DBH Class':'rdbh_class', 
-    #                             'Invasivity':'invasivity', 'Diversity Level':'diversity_level',
-    #                             'DBH Class':'dbh_class','Native':'native','Species Suitability':'suitability','Structural Defect':'structural', 
-    #                             'Health Defect':'health'})
-
-def let_it_rain():
-    rain(emoji="🌳", font_size=40, falling_speed=3, animation_length=0.75)
+# def let_it_rain():
+#     rain(emoji="🌳", font_size=40, falling_speed=3, animation_length=0.75)
 
 
 df_trees = getData(fileName)
@@ -146,6 +123,6 @@ if df_trees is not None:
 
     st.session_state['total_tree_count'] = total_tree_count
 
-    let_it_rain()
+    # let_it_rain()
 
     screen1.markdown(f'### Your data is loaded with {total_tree_count} entries . You can now proceed with the mapping and analyses by selecting a function from the sidebar at the left.')
