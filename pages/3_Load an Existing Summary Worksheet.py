@@ -125,4 +125,4 @@ if df_trees is not None:
 
     # let_it_rain()
 
-    screen1.markdown(f'### Your data is loaded with {total_tree_count} entries . You can now proceed with the mapping and analyses by selecting a function from the sidebar at the left.')
+    screen1.markdown(f'#### Your data is loaded with :red[{total_tree_count}] entries. You can now proceed with the mapping and analyses by selecting a function from the sidebar at the left. :arrow_backward:')
