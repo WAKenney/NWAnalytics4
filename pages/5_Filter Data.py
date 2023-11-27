@@ -18,21 +18,8 @@ st.subheader('Create or Refresh a Neighbourwoods Summary File')
 st.markdown("___")
 
 with st.expander("Click here for hints on filtering your data", expanded=False):
-    st.markdown("""The table below shows your inventory data 
-    and can be filtered much as you would a Microsoft Excel worksheet.  Scroll across the columns and place your cursor on the header of the
-    column that you wish to filter.  As you do so, an icon of three lines will appear in the header, click on this icon.  The type of filter
-    will depend on the type of data in that column.  For text data, you will see a list of all the options in that column with a checkbox to the left of each line.  To filter 
-    out specific items first click on the check box beside _Select All_ to switch off all the items.  Now, click on the box(es) beside the items
-    you want in your filter.  Note that you can type in an item name to shorten the list.  ***Once you have selected everything you want in the
-    filter, you must click on the Update button at the top left of the table***.  Your filtered data will now be used in all the functions you select
-    from the sidebar at the left.
-    For numerical data you will have the option to filter using comparison types such as equal to, greater than, etc.
-    Remember to click on the _Update_ button to commit your filter to the analysis functions. 
-    Columns with an active filter will have an icon that looks like a funnel in the header.        
-    To clear all filters and return to the full data set, click on the Update button.
-    Note: that you can save your filtered data as an Excel workbook by clicking on the link at the bottom of the FILTERED data table.""")
-
-
+    st.markdown("""The table below shows your inventory data.  To filter the data you must first click on the 'Add filters' check box."""
+    )
 # def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 def filter_dataframe(df):
     """
@@ -114,6 +101,7 @@ def filter_dataframe(df):
 
 
     return df
+
 
 #Call filter_dataframe to do the filtering and save the result as select_df
 select_df = filter_dataframe(st.session_state['df_trees'])
