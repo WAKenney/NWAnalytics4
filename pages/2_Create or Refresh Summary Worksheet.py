@@ -86,15 +86,12 @@ def create_summary_data():
             
                 st.error("Ooops something is wrong with your data file!")
             
-            save_data_screen = st.empty()
-
             return df_trees
 
 
     df_trees = get_raw_data(fileName)
 
 
-    
     @st.cache_data(show_spinner="Loading your street data, please wait ...")
     def get_streets():
 
@@ -536,19 +533,8 @@ def create_summary_data():
                                    inplace = True)
 
 
-
-        if 'df_trees' not in st.session_state:
-
-            st.session_state['df_trees'] = []
-
-        st.session_state['df_trees'] = df_trees
-
-        st.dataframe(df_trees, column_config={'defectColour': None})
-
-
-        
-        #Provide an option to save df_trees  AND df-streets to the same workbook
-
+    def save_data():
+        '''Provides an option to save df_trees  AND df-streets to the same workbook'''
         # create a buffer to hold the data
         buffer = io.BytesIO()
 
@@ -578,13 +564,29 @@ def create_summary_data():
         # create a download link for the workbook
         st.download_button(
 
-            label=':floppy_disk: Click here to save your data on your local computer',
+            # label=':floppy_disk: Click here to save your data on your local computer',
+            label =':floppy_disk: Click here to save your data on your local computer',
 
             data=buffer,
 
             file_name='summary' + date_time +'.xlsx',
 
             mime='application/vnd.ms-excel')
+
+    
+    if 'df_trees' not in st.session_state:
+
+        st.session_state['df_trees'] = []
+
+    st.session_state['df_trees'] = df_trees
+
+    save_data_screen = st.empty()
+
+    st.dataframe(df_trees, column_config={'defectColour': None})
+
+    with save_data_screen:
+
+        save_data()
 
 
     speciesTable = getSpeciesTable()
@@ -594,7 +596,6 @@ def create_summary_data():
     df_streets = get_streets()
 
     clean_and_expand_data(df_trees)
-
 
 fileName ='empty'
 
