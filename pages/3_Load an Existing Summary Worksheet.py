@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-from streamlit_extras.let_it_rain import rain 
-
+# from streamlit_extras.let_it_rain import rain 
 
 
 #Create page title
