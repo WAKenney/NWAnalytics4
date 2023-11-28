@@ -91,7 +91,6 @@ def fix_column_names(df):
                                    'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'})
 
 
-
 # def let_it_rain():
 #     rain(emoji="🌳", font_size=40, falling_speed=3, animation_length=0.75)
 
