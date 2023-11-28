@@ -102,6 +102,8 @@ def filter_dataframe(df):
                 if user_text_input:
                     df = df[df[column].astype(str).str.contains(user_text_input)]
 
+    # st.write(len(to_filter_columns))
+
     st.download_button("Download filtered data as a csv file",
                        df.to_csv().encode('utf-8'),
                        file_name = "Filtered_data.csv",
