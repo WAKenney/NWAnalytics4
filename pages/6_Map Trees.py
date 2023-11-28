@@ -3,8 +3,6 @@ from folium.plugins import Fullscreen
 import streamlit as st
 from streamlit_folium import folium_static
 
-
-
 #Create page title
 titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 
