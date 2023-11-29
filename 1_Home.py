@@ -5,13 +5,14 @@ import io
 # from io import BytesIO
 # import base64
 
+st.set_page_config(layout="centered")
 
 #Create page title
-# titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 
 title = 'nw4_splash_page.png'
 
-st.image(title)
+titleCol2.image(title)
 
 with st.expander("Click here for help in getting started.", expanded=False):
     st.markdown("""
@@ -32,8 +33,6 @@ with st.expander("Click here for help in getting started.", expanded=False):
 
         For support, contact Andy Kenney at:     a.kenney@utoronto.ca
 """)
-
-st.markdown("___")
 
 st.session_state['speciesTable'] = []
 
