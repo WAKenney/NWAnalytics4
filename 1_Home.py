@@ -7,12 +7,11 @@ import io
 
 
 #Create page title
-titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
+# titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 
-title = 'new_nw_header.png'
+title = 'nw4_splash_page.png'
 
-titleCol2.image(title, use_column_width=True)
-
+st.image(title)
 
 with st.expander("Click here for help in getting started.", expanded=False):
     st.markdown("""
@@ -35,4 +34,20 @@ with st.expander("Click here for help in getting started.", expanded=False):
 """)
 
 st.markdown("___")
+
+st.session_state['speciesTable'] = []
+
+st.session_state['df_trees'] = []
+
+st.session_state['df_trees'] = []
+
+st.session_state['select_df'] = []
+
+st.session_state['total_tree_count'] = []
+
+st.session_state['select_tree_count'] = []
+
+st.session_state['avLon'] = []
+
+st.session_state['avLat'] = []
 

@@ -105,13 +105,24 @@ if df_trees is not None:
     
     st.dataframe(df_trees)
 
+    #Add select_df to session_state
     if "df_trees" not in st.session_state:
 
         st.session_state['df_trees'] = []
 
     st.session_state['df_trees'] = df_trees
 
-    
+
+    #Add select_df to session_state but at this point it is the same as df_trees.  This will be replaced if a filter is applied
+    if "select_df" not in st.session_state:
+
+        st.session_state['select_df'] = []
+
+    st.session_state['select_df'] = df_trees
+
+
+
+
     total_tree_count = df_trees.shape[0]
 
 
