@@ -38,7 +38,7 @@ st.session_state['speciesTable'] = []
 
 st.session_state['df_trees'] = []
 
-st.session_state['df_trees'] = []
+st.session_state['select_df'] = []
 
 st.session_state['select_df'] = []
 
