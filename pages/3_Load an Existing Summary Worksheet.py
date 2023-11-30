@@ -105,7 +105,7 @@ if df_trees is not None:
     
     st.dataframe(df_trees)
 
-    #Add select_df to session_state
+    #Add df_trees to session_state
     if "df_trees" not in st.session_state:
 
         st.session_state['df_trees'] = []
@@ -120,9 +120,10 @@ if df_trees is not None:
 
     st.session_state['select_df'] = df_trees
 
-
-
-
+    #add average latitude and average longitude to session state
+    st.session_state['avLat'] = df_trees['latitude'].mean()
+    st.session_state['avLon'] = df_trees['longitude'].mean()
+    
     total_tree_count = df_trees.shape[0]
 
 
