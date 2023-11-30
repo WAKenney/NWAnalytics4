@@ -504,6 +504,7 @@ def create_summary_data():
 
         colorsTable.set_index('taxon', inplace = True)
 
+        # st.session_state['colorsTable'] = colorsTable
 
         df_trees.rename(columns = {'tree_name' : 'Tree Name', 'date' : 'Date', 'block' : 'Block ID', 'tree_number' : 'Tree Number', 
                                    'house_number' : 'House Number', 'street_code' : 'Street Code', 'species_code' : 'Species Code', 

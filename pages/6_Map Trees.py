@@ -99,6 +99,7 @@ def mapItFolium(mapData):
     #Add the legend saved at github called mapLegend.png
     # st.image(currentDir + 'mapLegend.png')
 
+
 if "select_df" is not None:
       
     if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
