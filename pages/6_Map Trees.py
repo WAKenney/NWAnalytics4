@@ -39,19 +39,19 @@ def mapItFolium(mapData):
     mapData['crown_radius'] = mapData['crown_width']/2
 
     #calculate the average Latitude value and average Longitude value to use to centre the map
-    avLat = mapData['latitude'].mean()  
-    avLon = mapData['longitude'].mean()
+    # avLat = mapData['latitude'].mean()  
+    # avLon = mapData['longitude'].mean()
     
     #calculate the avergae lat and lon for centering the map and the max and min values to set the bounds of the map
-    avLat=mapData['latitude'].mean()
-    avLon=mapData['longitude'].mean()
+    # avLat=st.session_state('avLat')
+    # avLon=st.session_state('avLat')
     maxLat=mapData['latitude'].max()
     minLat=mapData['latitude'].min()
     maxLon=mapData['longitude'].max()
     minLon=mapData['longitude'].min()
     
     #setup the map
-    treeMap = folium.Map(location=[avLat, avLon],  
+    treeMap = folium.Map(location=[st.session_state['avLat'], st.session_state['avLon']],  
         zoom_start=5,
         max_zoom=100, 
         min_zoom=1, 
@@ -99,7 +99,7 @@ def mapItFolium(mapData):
     #Add the legend saved at github called mapLegend.png
     # st.image(currentDir + 'mapLegend.png')
 
-if "select_df" in st.session_state:
+if "select_df" is not None:
       
     if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
 
@@ -110,10 +110,30 @@ if "select_df" in st.session_state:
     else:
 
         screen1.markdown(f"#### The map shows ALL :red[{st.session_state['total_tree_count']}] entries. ")
-        mapItFolium(st.session_state['df_trees'])
+        mapItFolium(st.session_state['select_df'])
 
 else:
 
-    mapItFolium(st.session_state['df_trees'])
+    st.error("Load data")
+
+
+
+
+# if "select_df" in st.session_state:
+      
+#     if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
+
+#         screen1.markdown(f"#### The map shows the :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
+
+#         mapItFolium(st.session_state['select_df'])
+
+#     else:
+
+#         screen1.markdown(f"#### The map shows ALL :red[{st.session_state['total_tree_count']}] entries. ")
+#         mapItFolium(st.session_state['select_df'])
+
+# else:
+
+#     mapItFolium(st.session_state['select_df'])
 
 # End-of-file (EOF)
