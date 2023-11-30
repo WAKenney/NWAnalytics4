@@ -116,6 +116,12 @@ def filter_dataframe(df):
 #Call filter_dataframe to do the filtering and save the result as select_df
 select_df = filter_dataframe(st.session_state['df_trees'])
 
+#calculate avLat and avlon for the selected dat and store in session_state
+st.session_state['avLat'] = select_df['latitude'].mean()
+
+st.session_state['avLon'] = select_df['longitude'].mean()
+
+
 #Store the filtered data (select_df in the session_state as select_df)
 if select_df not in st.session_state:
 
