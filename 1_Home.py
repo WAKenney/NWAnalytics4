@@ -7,6 +7,10 @@ import io
 
 st.set_page_config(layout="centered")
 
+currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
+
+speciesFile = currentDir + 'NWspecies220522.xlsx'
+
 #Create page title
 titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 
@@ -36,6 +40,8 @@ with st.expander("Click here for help in getting started.", expanded=False):
 
 st.session_state['speciesTable'] = []
 
+st.session_state['colorsTable'] = []
+
 st.session_state['df_trees'] = []
 
 st.session_state['select_df'] = []
@@ -50,3 +56,32 @@ st.session_state['avLon'] = []
 
 st.session_state['avLat'] = []
 
+
+@st.cache_data(show_spinner="Loading the species table, please wait ...")
+def getSpeciesTable():
+    '''Load the species table from the Neighburwoods repo'''
+
+    speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
+
+    # st.dataframe(speciesTable)
+
+    if "speciesTable" not in st.session_state:
+
+        st.session_state['speciesTable'] = []
+
+    st.session_state['speciesTable'] = speciesTable
+    
+    return speciesTable
+
+
+speciesTable = getSpeciesTable()
+
+
+# get the species specific colour from the species table for each entry and create the coloursTable
+colorsTable = pd.read_excel(speciesFile,sheet_name = "colors")
+
+colorsTable.set_index('taxon', inplace = True)
+
+st.session_state['colorsTable'] = colorsTable
+
+st.write(st.session_state)
