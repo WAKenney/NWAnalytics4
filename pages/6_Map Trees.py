@@ -29,8 +29,8 @@ def mapItFolium(mapData):
 
     pointSizeSlider = st.slider('Move the slider to adjust the point size', min_value = 2, max_value = 20, value =4)
         
-    if mapData.empty:
-        st.warning("Be sure to finish selecting the filtering values in the sidebar to the left.")
+    # if mapData is None:
+    #     st.warning("Be sure to finish selecting the filtering values in the sidebar to the left.")
 
     # Drop entries with no latitude or longitude values entered
     mapData = mapData[mapData['latitude'].notna()] 
@@ -100,7 +100,7 @@ def mapItFolium(mapData):
     # st.image(currentDir + 'mapLegend.png')
 
 
-if "select_df" is not None:
+if st.session_state['select_df'] is not None:
       
     if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
 
@@ -111,6 +111,7 @@ if "select_df" is not None:
     else:
 
         screen1.markdown(f"#### The map shows ALL :red[{st.session_state['total_tree_count']}] entries. ")
+
         mapItFolium(st.session_state['select_df'])
 
 else:
@@ -118,7 +119,13 @@ else:
     st.error("Load data")
 
 
+# if st.session_state['df_trees'] is not None:
+    
+mapItFolium(st.session_state['select_df'])
 
+# else:
+
+#     screen1.markdown("You still haven't loaded your data!")
 
 # if "select_df" in st.session_state:
       
@@ -136,5 +143,3 @@ else:
 # else:
 
 #     mapItFolium(st.session_state['select_df'])
-
-# End-of-file (EOF)
