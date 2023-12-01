@@ -157,3 +157,24 @@ def diversity(data):
     st.plotly_chart(CpaPie)
     
 diversity(st.session_state.select_df)
+
+
+#show the filtered dataframe select_df and the number of entries
+
+if "select_df" in st.session_state:
+    
+    if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
+
+        screen1.markdown(f"#### There are :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
+
+        st.session_state['select_df']
+
+    else:
+
+        screen1.markdown(f"#### All :red[{st.session_state['total_tree_count']}] entries are shown (no filter). ")
+        st.session_state['df_trees']
+
+else:
+
+    st.session_state['df_trees']
+
