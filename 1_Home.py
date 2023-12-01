@@ -83,5 +83,3 @@ colorsTable = pd.read_excel(speciesFile,sheet_name = "colors")
 colorsTable.set_index('taxon', inplace = True)
 
 st.session_state['colorsTable'] = colorsTable
-
-st.write(st.session_state)
