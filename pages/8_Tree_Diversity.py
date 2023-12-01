@@ -96,15 +96,7 @@ def diversity(data):
     speciesPie = px.pie(topTenPlusOther, 
         values='frequency', 
         names = divLevel,
-        
         )
-
-    # speciesPie = px.pie(topTenPlusOther, 
-    #     values='frequency', 
-    #     names = divLevel,
-    #     color = divLevel,
-    #     color_discrete_map = colorsDict
-    #     )
 
     speciesPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     speciesPie.update_layout(showlegend=False)
@@ -128,15 +120,34 @@ def diversity(data):
     topTenCpaSorted = topTenCpaPT.sort_values(by='cpa',ascending=False).head(10)
     topTenCpaTotal = topTenCpaSorted['cpa'].sum()
     otherCpaTotal = totalCpa - topTenCpaTotal
-    topTenCpaPlusOther = topTenCpaSorted.append({divLevel:'Other', 'cpa': otherCpaTotal}, ignore_index =True)
+
+# initialize list for 'other' row iin table 
+    other_cpa_data = [['Other', otherCpaTotal]] 
+    
+    # Create the pandas DataFrame of 'other' row
+    other_df = pd.DataFrame(other_cpa_data, columns=[divLevel, 'tree_name'])
+
+    #concatenate the full table and the row for 'other'
+    topTenCpaPlusOther = pd.concat([topTenCpaSorted,other_df])
+
+    #rename the column named 'tree-name' to frequency. 'tree-name' was used to count since every rows is sure to have a value in  tree name
     topTenCpaPlusOther.rename(columns = {'cpa': 'Crown Projection Area'},inplace = True)
     
+    # st.dataframe(topTenCpaPlusOther)
+
+
     CpaPie = px.pie(topTenCpaPlusOther, 
         values='Crown Projection Area', 
         names = divLevel,
-        color = divLevel,
-        color_discrete_map = colorsDict
         )
+
+    # # topTenCpaPlusOther = topTenCpaSorted.append({divLevel:'Other', 'cpa': otherCpaTotal}, ignore_index =True)
+    # CpaPie = px.pie(topTenCpaPlusOther, 
+    #     values='Crown Projection Area', 
+    #     names = divLevel,
+    #     color = divLevel,
+    #     color_discrete_map = colorsDict
+    #     )
 
     CpaPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     CpaPie.update_layout(showlegend=False)
