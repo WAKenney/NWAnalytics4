@@ -119,13 +119,13 @@ def create_summary_data():
     def clean_and_expand_data(df_trees):
        
         df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block',
-                                   'Tree Number' : 'tree_number', 'House Number' : 'house_number', 'Street Code' : 'street_code', 
+                                   'Tree Number' : 'tree_number', 'Tree No' : 'tree_number', 'House Number' : 'house_number', 'Street Code' : 'street_code', 
                                    'Species Code' : 'species_code', 'Location Code' : 'location_code', 'location':'location_code', 
                                    'Ownership Code' : 'ownership_code','ownership':'ownership_code','Ownership code':'ownership_code', 
-                                   'Number of Stems' : 'number_of_stems', 'DBH' : 'dbh', 'Hard Surface' : 'hard_surface', 
+                                   'Number of Stems' : 'number_of_stems', 'DBH' : 'dbh', 'Hard Surface' : 'hard_surface', 'Hard surface' : 'hard_surface',
                                    'Crown Width' : 'crown_width', 'Ht to Crown Base' : 'height_to_crown_base', 
                                    'Total Height' : 'total_height', 'Reduced Crown' : 'reduced_crown', 
-                                   'Unbalanced Crown' : 'unbalanced_crown', 'Defoliation' : 'defoliation', 
+                                   'Unbalanced Crown' : 'unbalanced_crown', 'Defoliation' : 'defoliation', 'Weak or Yellow Foliage' : 'weak_or_yellow_foliage',
                                    'Weak or Yellowing Foliage' : 'weak_or_yellow_foliage', 
                                    'Dead or Broken Branch' : 'dead_or_broken_branch', 'Lean' : 'lean', 
                                    'Poor Branch Attachment' : 'poor_branch_attachment', 'Branch Scars' : 'branch_scars', 
@@ -532,9 +532,17 @@ def create_summary_data():
                                    'health' : 'Health Defects', 'description' : 'Description', 'defects' : 'Defects', 
                                    'defectColour' : 'Defect Colour', 'demerits' :  'Total Demerits', 'simple_rating' : 'Simple Rating'},
                                    inplace = True)
+        
+        if 'df_trees' not in st.session_state:
+
+            st.session_state['df_trees'] = []
+
+        st.session_state['df_trees'] = df_trees
+            
+        return df_trees
 
 
-    def save_data():
+    def save_data(df_trees):
         '''Provides an option to save df_trees  AND df-streets to the same workbook'''
         # create a buffer to hold the data
         buffer = io.BytesIO()
@@ -575,28 +583,26 @@ def create_summary_data():
             mime='application/vnd.ms-excel')
 
     
-    if 'df_trees' not in st.session_state:
+    # if 'df_trees' not in st.session_state:
 
-        st.session_state['df_trees'] = []
+    #     st.session_state['df_trees'] = []
 
-    st.session_state['df_trees'] = df_trees
+    # st.session_state['df_trees'] = df_trees
 
     save_data_screen = st.empty()
 
-    st.dataframe(df_trees, column_config={'defectColour': None})
-
     with save_data_screen:
 
-        save_data()
+        save_data(df_trees)
 
 
     speciesTable = getSpeciesTable()
 
     df_trees = get_raw_data(fileName)
-
+    
     df_streets = get_streets()
 
-    clean_and_expand_data(df_trees)
+    return clean_and_expand_data(df_trees)
 
 fileName ='empty'
 
@@ -605,4 +611,8 @@ fileName = st.file_uploader("Browse for or drag and drop the name of your Neighb
 
 if fileName is not None:
     
-    create_summary_data()
+    df_trees = create_summary_data()
+
+    st.dataframe(df_trees, column_config={'defectColour': None})
+
+    # save_data(df_trees)
