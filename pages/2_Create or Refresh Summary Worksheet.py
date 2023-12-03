@@ -106,12 +106,12 @@ def create_summary_data():
 
             df_trees.rename(columns = {'ADDRESS' : 'street_code', 'ADDRESSNAME' : 'street_name',
                                        'Street Code':'street_code','Street Name':'street_name'})
+            
+            if 'df_streets' not in st.session_state:
 
-            # if df_streets.iat[0,0] == 'street_code':
-            #     df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
+                st.session_state['df_streets'] = []
 
-            # if df_streets.iat[0,0] == 'street':
-            #     df_streets = pd.read_excel(fileName, sheet_name = 1, header = 1)
+            st.session_state['df_streets'] = df_streets
 
             return df_streets
 
@@ -547,46 +547,6 @@ def create_summary_data():
         return df_trees
 
 
-# def save_data(df_trees):
-#     '''Provides an option to save df_trees  AND df-streets to the same workbook'''
-
-#     # create a buffer to hold the data
-#     buffer = io.BytesIO()
-
-#     # create a Pandas Excel writer using the buffer
-#     writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
-
-#     # write the dataframes to separate sheets in the workbook
-#     df_trees.to_excel(writer, sheet_name='trees', index=False)
-
-#     df_streets.to_excel(writer, sheet_name='streets', index=False)
-
-#     # save the workbook to the buffer
-#     writer.close()
-
-#     # reset the buffer position to the beginning
-#     buffer.seek(0)
-
-#     # Set timezone
-#     timezone = pytz.timezone('America/Toronto')
-
-#     # Get the current local time
-#     now = datetime.datetime.now(timezone)
-
-#     # Print the current local time
-#     date_time = now.strftime("%d%m%Y%H%M")
-
-#     # create a download link for the workbook
-#     st.download_button(
-
-#         label =':floppy_disk: Click here to save your data on your local computer',
-
-#         data=buffer,
-
-#         file_name='summary' + date_time +'.xlsx',
-
-#         mime='application/vnd.ms-excel')
-
     
     if 'df_trees' not in st.session_state:
 
@@ -616,6 +576,51 @@ def create_summary_data():
     return df_trees
 
 
+def save_data(df_trees):
+    '''Provides an option to save df_trees  AND df-streets to the same workbook'''
+
+    # create a buffer to hold the data
+    buffer = io.BytesIO()
+
+    # create a Pandas Excel writer using the buffer
+    writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
+
+    # write the dataframes to separate sheets in the workbook
+    df_trees.to_excel(writer, sheet_name='trees', index=False)
+
+    df_streets = []
+
+    df_streets = st.session_state['df_streets']
+
+    df_streets.to_excel(writer, sheet_name='streets', index=False)
+
+    # save the workbook to the buffer
+    writer.close()
+
+    # reset the buffer position to the beginning
+    buffer.seek(0)
+
+    # Set timezone
+    timezone = pytz.timezone('America/Toronto')
+
+    # Get the current local time
+    now = datetime.datetime.now(timezone)
+
+    # Print the current local time
+    date_time = now.strftime("%d%m%Y%H%M")
+
+    # create a download link for the workbook
+    st.download_button(
+
+        label =':floppy_disk: Click here to save your data on your local computer',
+
+        data=buffer,
+
+        file_name='summary' + date_time +'.xlsx',
+
+        mime='application/vnd.ms-excel')
+
+
 
 fileName ='empty'
 
@@ -628,4 +633,4 @@ if fileName is not None:
 
     st.dataframe(df_trees, column_config={'defectColour': None})
 
-    # save_data(df_trees)
+    save_data(df_trees)
