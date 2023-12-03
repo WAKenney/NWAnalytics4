@@ -36,6 +36,7 @@ st.subheader('Create or Refresh a Neighbourwoods Summary File')
 st.markdown("___")
 
 screen1 = st.empty()
+screen2 = st.empty()
 
 st.markdown("___")
 
@@ -541,11 +542,8 @@ def create_summary_data():
             st.session_state['df_trees'] = []
 
         st.session_state['df_trees'] = df_trees
-
-        screen1.write(df_trees.head(2))
             
         return df_trees
-
 
     
     if 'df_trees' not in st.session_state:
@@ -554,22 +552,26 @@ def create_summary_data():
 
     st.session_state['df_trees'] = df_trees
 
-    save_data_screen = st.empty()
+    # with save_data_screen:
 
-    with save_data_screen:
-
-        screen1.write(df_trees.head(2))
+    #     screen1.write(df_trees.head(2))
 
         # save_data(df_trees)
 
 
     speciesTable = getSpeciesTable()
 
-    df_trees = get_raw_data(fileName)
+    with screen1:
+        with st.spinner(f'### Loading your data.  Please wait'):
+
+            df_trees = get_raw_data(fileName)
     
     df_streets = get_streets()
 
-    df_trees = clean_and_expand_data(df_trees)
+    with screen1:
+        with st.spinner(f'### Cleaning up and deriving data.  Please wait'):
+
+            df_trees = clean_and_expand_data(df_trees)
 
     # save_data(df_trees)
 
@@ -631,6 +633,20 @@ if fileName is not None:
     
     df_trees = create_summary_data()
 
+    total_tree_count = df_trees.shape[0]
+
+    st.session_state['total_tree_count'] = total_tree_count
+
+    screen1.markdown(f'''#### There are :red[{total_tree_count}] now loaded.  You can save this summary file by clicking on the button below, and/or proceed with the analyses in the sidebar to the left''')
+
+    
+
     st.dataframe(df_trees, column_config={'defectColour': None})
 
-    save_data(df_trees)
+    with screen2:
+        save_data(df_trees)
+
+else:
+
+    with screen1:
+        st.markdown(f'''### Select a Neighbourwoods input file in the space below.''')
