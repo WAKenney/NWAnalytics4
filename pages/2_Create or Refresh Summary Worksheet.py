@@ -35,6 +35,9 @@ st.subheader('Create or Refresh a Neighbourwoods Summary File')
 
 st.markdown("___")
 
+screen1 = st.empty()
+
+st.markdown("___")
 
 
 def create_summary_data():
@@ -538,62 +541,66 @@ def create_summary_data():
             st.session_state['df_trees'] = []
 
         st.session_state['df_trees'] = df_trees
+
+        screen1.write(df_trees.head(2))
             
         return df_trees
 
 
-    def save_data(df_trees):
-        '''Provides an option to save df_trees  AND df-streets to the same workbook'''
-        # create a buffer to hold the data
-        buffer = io.BytesIO()
+# def save_data(df_trees):
+#     '''Provides an option to save df_trees  AND df-streets to the same workbook'''
 
-        # create a Pandas Excel writer using the buffer
-        writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
+#     # create a buffer to hold the data
+#     buffer = io.BytesIO()
 
-        # write the dataframes to separate sheets in the workbook
-        df_trees.to_excel(writer, sheet_name='trees', index=False)
+#     # create a Pandas Excel writer using the buffer
+#     writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
 
-        df_streets.to_excel(writer, sheet_name='streets', index=False)
+#     # write the dataframes to separate sheets in the workbook
+#     df_trees.to_excel(writer, sheet_name='trees', index=False)
 
-        # save the workbook to the buffer
-        writer.close()
+#     df_streets.to_excel(writer, sheet_name='streets', index=False)
 
-        # reset the buffer position to the beginning
-        buffer.seek(0)
+#     # save the workbook to the buffer
+#     writer.close()
 
-        # Set timezone
-        timezone = pytz.timezone('America/Toronto')
+#     # reset the buffer position to the beginning
+#     buffer.seek(0)
 
-        # Get the current local time
-        now = datetime.datetime.now(timezone)
+#     # Set timezone
+#     timezone = pytz.timezone('America/Toronto')
 
-        # Print the current local time
-        date_time = now.strftime("%d%m%Y%H%M")
+#     # Get the current local time
+#     now = datetime.datetime.now(timezone)
 
-        # create a download link for the workbook
-        st.download_button(
+#     # Print the current local time
+#     date_time = now.strftime("%d%m%Y%H%M")
 
-            # label=':floppy_disk: Click here to save your data on your local computer',
-            label =':floppy_disk: Click here to save your data on your local computer',
+#     # create a download link for the workbook
+#     st.download_button(
 
-            data=buffer,
+#         label =':floppy_disk: Click here to save your data on your local computer',
 
-            file_name='summary' + date_time +'.xlsx',
+#         data=buffer,
 
-            mime='application/vnd.ms-excel')
+#         file_name='summary' + date_time +'.xlsx',
+
+#         mime='application/vnd.ms-excel')
 
     
-    # if 'df_trees' not in st.session_state:
+    if 'df_trees' not in st.session_state:
 
-    #     st.session_state['df_trees'] = []
+        st.session_state['df_trees'] = []
 
-    # st.session_state['df_trees'] = df_trees
+    st.session_state['df_trees'] = df_trees
 
     save_data_screen = st.empty()
 
     with save_data_screen:
 
-        save_data(df_trees)
+        screen1.write(df_trees.head(2))
+
+        # save_data(df_trees)
 
 
     speciesTable = getSpeciesTable()
@@ -602,7 +609,13 @@ def create_summary_data():
     
     df_streets = get_streets()
 
-    return clean_and_expand_data(df_trees)
+    df_trees = clean_and_expand_data(df_trees)
+
+    # save_data(df_trees)
+
+    return df_trees
+
+
 
 fileName ='empty'
 
