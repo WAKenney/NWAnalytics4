@@ -167,14 +167,14 @@ if "select_df" in st.session_state:
 
         screen1.markdown(f"#### There are :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
 
-        st.session_state['select_df']
+        # st.session_state['select_df']
 
     else:
 
         screen1.markdown(f"#### All :red[{st.session_state['total_tree_count']}] entries are shown (no filter). ")
-        st.session_state['df_trees']
+        # st.session_state['df_trees']
 
-else:
+# else:
 
-    st.session_state['df_trees']
+#     st.session_state['df_trees']
 
