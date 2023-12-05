@@ -4,6 +4,9 @@ import geopandas as gpd
 import streamlit as st
 import datetime
 import pytz
+import folium
+from streamlit_folium import folium_static
+from shapely.geometry import Point
 
 
 # from io import BytesIO
@@ -15,8 +18,6 @@ st.write('<style>div.Widget.row-widget.stRadio > div{flex-direction:row;}</style
 currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
 speciesFile = currentDir + 'NWspecies220522.xlsx'
-
-activeEcodist = '6E-16'
 
 attributeNames = ['reduced_crown', 'unbalanced_crown', 'defoliation',
     'weak_or_yellow_foliage', 'dead_or_broken_branch',  'lean', 'poor_branch_attachment',	
@@ -122,7 +123,7 @@ def create_summary_data():
 
     def clean_and_expand_data(df_trees):
        
-        df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block',
+        df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block', 'Block':'block',
                                    'Tree Number' : 'tree_number', 'Tree No' : 'tree_number', 'House Number' : 'house_number', 'Street Code' : 'street_code', 
                                    'Species Code' : 'species_code', 'Location Code' : 'location_code', 'location':'location_code', 
                                    'Ownership Code' : 'ownership_code','ownership':'ownership_code','Ownership code':'ownership_code', 
@@ -192,24 +193,30 @@ def create_summary_data():
         cols = df_trees.columns
 
 
-        def getOrigin():
+
+
+
+        # def getOrigin():
             
-            origin = pd.read_excel(speciesFile, sheet_name = 'origin')
+        #     origin = pd.read_excel(speciesFile, sheet_name = 'origin')
 
-            return origin
-
-
-        df_origin = getOrigin()
+        #     return origin
 
 
-        def getEcodistricts():
+        # df_origin = getOrigin()
 
-            gpd_ecodistricts = gpd.read_file(r"https://github.com/WAKenney/NWAnalytics/blob/master/OntarioEcodistricts.gpkg")
+
+        # def getEcodistricts():
+
+        #     gpd_ecodistricts = gpd.read_file(r"https://github.com/WAKenney/NWAnalytics/blob/master/OntarioEcodistricts.gpkg")
               
-            return gpd_ecodistricts
+        #     return gpd_ecodistricts
 
 
         # gpd_ecodistricts = getEcodistricts()
+
+
+
 
 
         def getCodes():
@@ -225,7 +232,37 @@ def create_summary_data():
 
         df_trees=df_trees.rename(columns = {'Max DBH':'max_dbh'})
 
+
+        def get_ecodistrict():
+            '''Determines the name of the ecodistrict that the average latitude and average longitude are in.  This is used
+            to determine native vs non-native based on ecodistricts and Little's tree species range maps.'''
+                
+            currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
+            
+            # import the geopackage with the map (geometries) of all Ecodistricts'''
+                
+            ecodistricts = gpd.read_file(currentDir + "OntarioEcodistricts.gpkg")
+            
+            #create a point with avLon and avLat from session_state
+            point = Point(st.session_state['avLon'], st.session_state['avLat'])
+
+            #Make the point object a geodataframe
+            point_gdf = gpd.GeoDataFrame(geometry=[point])
+
+            #determine which of the ecodistrict polygons the point is in
+            selected_polygon = gpd.tools.sjoin(point_gdf, ecodistricts, predicate="within", how='left')
+
+            #read the name of the selected ecodistrict and call it ecodName
+            ecodistrict_name = (selected_polygon.ECODISTR_1[0])
+
+            return ecodistrict_name
+
+        activeEcodist = get_ecodistrict()
+
+
         def origin(df_trees):
+          
+            df_origin = pd.read_excel(speciesFile, sheet_name = 'origin')
 
             df_trees = df_trees.merge(df_origin.loc[:,['species_code', activeEcodist]], how='left')
 
