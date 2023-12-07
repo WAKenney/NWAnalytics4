@@ -244,7 +244,21 @@ def create_summary_data():
             ecodistricts = gpd.read_file(currentDir + "OntarioEcodistricts.gpkg")
             
             #create a point with avLon and avLat from session_state
-            point = Point(st.session_state['avLon'], st.session_state['avLat'])
+            avLat = df_trees['latitude'].mean()
+
+            if 'avLat' not in st.session_state:
+                avLat = [] 
+
+            st.session_state['avLat'] = avLat
+            
+            avLon = df_trees['longitude'].mean()
+
+            if 'avLon' not in st.session_state:
+                avLon = [] 
+
+            st.session_state['avLon'] = avLon
+                        
+            point = Point(avLon, avLat)
 
             #Make the point object a geodataframe
             point_gdf = gpd.GeoDataFrame(geometry=[point])

@@ -93,7 +93,11 @@ def diversity(data):
     #rename the column named 'tree-name' to frequency. 'tree-name' was used to count since every rows is sure to have a value in  tree name
     topTenPlusOther.rename(columns = {'tree_name': 'frequency'},inplace = True)
 
-    speciesPie = px.pie(topTenPlusOther, 
+    #add color column to table for plotting pie chart
+    topTenPlusOther = topTenPlusOther.merge(st.session_state['colorsTable'],left_on = 'species', right_on = 'taxon', how = 'left')
+
+    speciesPie = px.pie(topTenPlusOther,
+        color = 'color', 
         values='frequency', 
         names = divLevel,
         )
@@ -132,12 +136,18 @@ def diversity(data):
 
     #rename the column named 'tree-name' to frequency. 'tree-name' was used to count since every rows is sure to have a value in  tree name
     topTenCpaPlusOther.rename(columns = {'cpa': 'Crown Projection Area'},inplace = True)
+
+    
+    #add color column to table for plotting pie chart
+    topTenCpaPlusOther = topTenCpaPlusOther.merge(st.session_state['colorsTable'],left_on = 'species', right_on = 'taxon', how = 'left')
+
     
     # st.dataframe(topTenCpaPlusOther)
 
 
     CpaPie = px.pie(topTenCpaPlusOther, 
-        values='Crown Projection Area', 
+        values='Crown Projection Area',
+        color = 'color', 
         names = divLevel,
         )
 

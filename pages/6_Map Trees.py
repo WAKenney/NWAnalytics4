@@ -26,8 +26,7 @@ def mapItFolium(mapData):
 
     '''Generates a folium map using the selected dataframe
     '''
-
-    pointSizeSlider = st.slider('Move the slider to adjust the point size', min_value = 2, max_value = 20, value =4)
+    pointSizeSlider = st.slider('Move the slider to adjust the point size', min_value = 2, max_value = 20, value =4, key = st.session_state['slider_key'])
         
     # if mapData is None:
     #     st.warning("Be sure to finish selecting the filtering values in the sidebar to the left.")
@@ -121,7 +120,7 @@ else:
 
 # if st.session_state['df_trees'] is not None:
     
-mapItFolium(st.session_state['select_df'])
+# mapItFolium(st.session_state['select_df'])
 
 # else:
 
