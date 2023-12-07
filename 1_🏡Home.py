@@ -1,12 +1,10 @@
 import pandas as pd
 import geopandas as gpd
 import streamlit as st
-import io
-# from io import BytesIO
-# import base64
 from datetime import datetime
 
 st.set_page_config(layout="centered")
+
 
 currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
