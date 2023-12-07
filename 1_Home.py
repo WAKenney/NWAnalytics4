@@ -4,6 +4,7 @@ import streamlit as st
 import io
 # from io import BytesIO
 # import base64
+from datetime import datetime
 
 st.set_page_config(layout="centered")
 
@@ -17,6 +18,14 @@ titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 title = 'nw4_splash_page.png'
 
 titleCol2.image(title)
+
+
+
+now = datetime.now()
+formatted_date = now.strftime("%d-%m-%Y %H:%M:%S")
+st.write("Last updated:", formatted_date)
+
+
 
 with st.expander("Click here for help in getting started.", expanded=False):
     st.markdown("""
