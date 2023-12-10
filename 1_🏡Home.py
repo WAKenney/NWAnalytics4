@@ -8,7 +8,8 @@ st.set_page_config(layout="centered")
 
 currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
-speciesFile = currentDir + 'NWspecies220522.xlsx'
+# speciesFile = currentDir + 'NWspecies220522.xlsx'
+speciesFile = 'NWspecies220522.xlsx'
 
 #Create page title
 titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
@@ -82,6 +83,9 @@ def getSpeciesTable():
 
 
 speciesTable = getSpeciesTable()
+
+
+st.write(speciesTable.head())
 
 
 # get the species specific colour from the species table for each entry and create the coloursTable
