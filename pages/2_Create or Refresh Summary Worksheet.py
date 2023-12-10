@@ -70,7 +70,7 @@ def create_summary_data():
         return speciesTable
 
 
-    speciesTable = getSpeciesTable()
+#     speciesTable = getSpeciesTable()
 
 
     @st.cache_data(show_spinner="Loading your data, please wait ...")
