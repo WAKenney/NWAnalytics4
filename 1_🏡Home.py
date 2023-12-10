@@ -85,9 +85,6 @@ def getSpeciesTable():
 speciesTable = getSpeciesTable()
 
 
-st.write(speciesTable.head())
-
-
 # get the species specific colour from the species table for each entry and create the coloursTable
 colorsTable = pd.read_excel(speciesFile,sheet_name = "colors")
 
