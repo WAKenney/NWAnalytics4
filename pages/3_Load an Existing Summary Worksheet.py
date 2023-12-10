@@ -91,6 +91,34 @@ def fix_column_names(df_trees):
                                    'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'})
     
 
+# def set_data_types(df_trees):
+
+#     # df_trees = df_trees.astype({'street_code': 'category', 'reduced_crown': 'category'})
+#     df_trees = df_trees.astype({'block' : 'category', 'tree_number' : 'int64', 'house_number' : 'str', 'street_code' : 'category', 'species_code' : 'category', 
+#                                    'location_code' : 'category', 'ownership_code' : 'category', 
+#                                    'number_of_stems' : 'int64', 'dbh' : 'float64', 'hard_surface' : 'int64', 
+#                                    'crown_width' : 'int64', 'height_to_crown_base' : 'int64', 
+#                                    'total_height' : 'int64', 'reduced_crown' : 'category', 
+#                                    'unbalanced_crown' : 'category', 'defoliation' : 'category', 
+#                                    'weak_or_yellow_foliage' : 'category', 'dead_or_broken_branch' : 'category', 'lean' : 'category', 
+#                                    'poor_branch_attachment' : 'category', 'branch_scars' : 'category', 
+#                                    'trunk_scars' : 'category', 'conks' : 'category', 'branch_rot_or_cavity' : 'category', 
+#                                    'trunk_rot_or_cavity' : 'category', 'confined_space' : 'category', 
+#                                    'crack' : 'category', 'girdling_roots' : 'category',  'exposed_roots' : 'category', 
+#                                    'recent_trenching' : 'category', 'cable_or_brace' : 'category', 
+#                                    'wire_conflict' : 'category', 'sidewalk_conflict' : 'category', 
+#                                    'structure_conflict' : 'category', 'tree_conflict' : 'category', 
+#                                    'sign_conflict' : 'category', 'comments' : 'category',  
+#                                    'street' : 'category', 'family' : 'category', 'genus' : 'category', 'species' : 'category', 
+#                                    'invasivity' : 'category', 'suitability' : 'category', 
+#                                    'diversity_level' : 'category', 'native' : 'category', 'cpa' : 'float64', 
+#                                    'address' : 'str', 'dbh_class' : 'category', 'rdbh' : 'float64', 
+#                                    'rdbh_class' : 'category', 'structural' : 'category', 
+#                                    'health' : 'category', 'description' : 'str', 'defects' : 'category', 
+#                                    'defectColour' : 'category', 'demerits' :  'int64', 'simple_rating' : 'category'})
+
+#     return df_trees
+
 
 # def let_it_rain():
 #     rain(emoji="🌳", font_size=40, falling_speed=3, animation_length=0.75)
@@ -101,6 +129,10 @@ df_trees = getData(fileName)
 if df_trees is not None:
 
     df_trees = fix_column_names(df_trees)
+
+    # df_trees = set_data_types(df_trees)
+
+    st.write(df_trees.dtypes)
 
     screen1 = st.empty()
     
