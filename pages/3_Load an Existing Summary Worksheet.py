@@ -59,7 +59,7 @@ def getData(fileName):
             st.warning("Uh oh! The file you selected doesn't appear to be a SUMMARY file. You may have to run the 'Create or Refresh Summary Worksheet' function first.")
 
         
-def fix_column_names(df):
+def fix_column_names(df_trees):
     '''Standardize column names to lower case and hyphenated (no spaces) as well as correct various 
     different spelling of names.'''
     
@@ -89,6 +89,7 @@ def fix_column_names(df):
                                    'Relative DBH Class' : 'rdbh_class', 'Structural Defects' : 'structural', 
                                    'Health Defects' : 'health', 'Description' : 'description', 'Defects' : 'defects', 
                                    'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'})
+    
 
 
 # def let_it_rain():
