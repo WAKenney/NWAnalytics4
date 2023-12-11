@@ -122,6 +122,7 @@ def create_summary_data():
 
 
     def clean_and_expand_data(df_trees):
+
        
         df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block', 'Block':'block',
                                    'Tree Number' : 'tree_number', 'Tree No' : 'tree_number', 'House Number' : 'house_number', 'Street Code' : 'street_code', 
@@ -141,7 +142,7 @@ def create_summary_data():
                                    'Conflict with Wires' : 'wire_conflict', 'Conflict with Sidewalk' : 'sidewalk_conflict', 
                                    'Conflict with Structure' : 'structure_conflict', 'Conflict with Another Tree' : 'tree_conflict', 
                                    'Conflict with Traffic Sign' : 'sign_conflict', 'Comments' : 'comments', 
-                                   'Longitude' : 'longitude', 'Latitude' : 'latitude', 
+                                   'Longitude' : 'longitude', 'Latitude' : 'latitude', 'street_name':'street',
                                    'Street' : 'street', 'Family' : 'family', 'Genus' : 'genus', 'Species' : 'species', 
                                    'Invasivity' : 'invasivity', 'Species Suitability' : 'suitability', 
                                    'Diversity Level' : 'diversity_level', 'Native' : 'native', 'Crown Projection Area (CPA)' : 'cpa', 
@@ -150,6 +151,24 @@ def create_summary_data():
                                    'Health Defects' : 'health', 'Description' : 'description', 'Defects' : 'defects', 
                                    'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'},
                                    inplace = True)
+        
+        df_trees = df_trees.astype({'block' : 'category', 'street_code' : 'category', 'species_code' : 'category', 
+                                   'location_code' : 'category', 'ownership_code' : 'category', 
+                                   'reduced_crown' : 'category', 'unbalanced_crown' : 'category', 'defoliation' : 'category', 
+                                   'weak_or_yellow_foliage' : 'category', 'dead_or_broken_branch' : 'category', 'lean' : 'category', 
+                                   'poor_branch_attachment' : 'category', 'branch_scars' : 'category', 
+                                   'trunk_scars' : 'category', 'conks' : 'category', 'branch_rot_or_cavity' : 'category', 
+                                   'trunk_rot_or_cavity' : 'category', 'confined_space' : 'category', 
+                                   'crack' : 'category', 'girdling_roots' : 'category',  'exposed_roots' : 'category', 
+                                   'recent_trenching' : 'category', 'cable_or_brace' : 'category', 
+                                   'wire_conflict' : 'category', 'sidewalk_conflict' : 'category', 
+                                   'structure_conflict' : 'category', 'tree_conflict' : 'category', 
+                                   'sign_conflict' : 'category','street' : 'category', 'family' : 'category', 
+                                   'genus' : 'category', 'species' : 'category', 
+                                   'invasivity' : 'category', 'suitability' : 'category', 
+                                   'diversity_level' : 'category', 'invasivity' : 'category', 'dbh_class' : 'category', 
+                                   'rdbh_class' : 'category', 'structural' : 'category', 
+                                   'health' : 'category', 'defects' : 'category'})
        
 
         dataCols =df_trees.columns
