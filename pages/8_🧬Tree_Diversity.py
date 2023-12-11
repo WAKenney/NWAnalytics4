@@ -23,11 +23,11 @@ screen3 = st.empty()
 
 st.markdown("___")
 
-   
+
 def diversity(data):
     """Analyze tree diversity"""
 
-    # st.write(data.columns)
+    data.rename(columns = {'Diversity Level' : 'diversity_level'}, inplace = True)
 
     data = data.loc[data['diversity_level'] != 'other']
    
@@ -94,7 +94,7 @@ def diversity(data):
     topTenPlusOther.rename(columns = {'tree_name': 'frequency'},inplace = True)
 
     #add color column to table for plotting pie chart
-    topTenPlusOther = topTenPlusOther.merge(st.session_state['colorsTable'],left_on = 'species', right_on = 'taxon', how = 'left')
+    topTenPlusOther = topTenPlusOther.merge(st.session_state['colorsTable'],left_on = divLevel, right_on = 'taxon', how = 'left')
 
     speciesPie = px.pie(topTenPlusOther,
         color = 'color', 
@@ -139,7 +139,7 @@ def diversity(data):
 
     
     #add color column to table for plotting pie chart
-    topTenCpaPlusOther = topTenCpaPlusOther.merge(st.session_state['colorsTable'],left_on = 'species', right_on = 'taxon', how = 'left')
+    topTenCpaPlusOther = topTenCpaPlusOther.merge(st.session_state['colorsTable'],left_on = divLevel, right_on = 'taxon', how = 'left')
 
     
     # st.dataframe(topTenCpaPlusOther)
@@ -165,24 +165,32 @@ def diversity(data):
                   marker=dict(line=dict(color='#000000', width=1)))
     
     st.plotly_chart(CpaPie)
-    
-diversity(st.session_state.select_df)
 
 
 #show the filtered dataframe select_df and the number of entries
 
-if "select_df" in st.session_state:
-    
-    if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
+if 'select_df' not in st.session_state:
 
-        screen1.markdown(f"#### There are :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
+    st.session_state['select_df'] =[]
 
-        # st.session_state['select_df']
 
-    else:
+if st.session_state['select_df'] is not None:
 
-        screen1.markdown(f"#### All :red[{st.session_state['total_tree_count']}] entries are shown (no filter). ")
-        # st.session_state['df_trees']
+        diversity(st.session_state.select_df)
+
+        if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
+
+            screen1.markdown(f"#### There are :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
+
+        else:
+
+            screen1.markdown(f"#### All :red[{st.session_state['total_tree_count']}] entries are shown (no filter). ")
+            # st.session_state['df_trees']
+
+
+
+screen1.markdown('### You must load your data before you can proceed!')
+
 
 # else:
 
