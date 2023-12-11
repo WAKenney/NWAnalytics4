@@ -23,9 +23,12 @@ st.markdown("___")
 main_screen = st.empty()
 
 def mapItFolium(mapData):
-
     '''Generates a folium map using the selected dataframe
     '''
+
+    mapData.rename(columns = {'Tree Name' : 'tree_name', 'Longitude' : 'longitude', 'Latitude' : 'latitude', 'Crown Width' : 'crown_width', 
+                              'Defect Colour' : 'defectColour', 'Description' : 'description'}, inplace = True)
+    
     pointSizeSlider = st.slider('Move the slider to adjust the point size', min_value = 2, max_value = 20, value =4)
         
     # if mapData is None:
@@ -116,29 +119,3 @@ if st.session_state['select_df'] is not None:
 else:
 
     st.error("Load data")
-
-
-# if st.session_state['df_trees'] is not None:
-    
-# mapItFolium(st.session_state['select_df'])
-
-# else:
-
-#     screen1.markdown("You still haven't loaded your data!")
-
-# if "select_df" in st.session_state:
-      
-#     if st.session_state['total_tree_count'] != st.session_state['select_tree_count']:
-
-#         screen1.markdown(f"#### The map shows the :red[{st.session_state['select_tree_count']}] entries in the filtered data. ")
-
-#         mapItFolium(st.session_state['select_df'])
-
-#     else:
-
-#         screen1.markdown(f"#### The map shows ALL :red[{st.session_state['total_tree_count']}] entries. ")
-#         mapItFolium(st.session_state['select_df'])
-
-# else:
-
-#     mapItFolium(st.session_state['select_df'])
