@@ -96,11 +96,10 @@ def diversity(data):
     #add color column to table for plotting pie chart
     topTenPlusOther = topTenPlusOther.merge(st.session_state['colorsTable'],left_on = divLevel, right_on = 'taxon', how = 'left')
 
-    speciesPie = px.pie(topTenPlusOther,
-        color = 'color', 
-        values='frequency', 
-        names = divLevel,
-        )
+    speciesPie = px.pie(topTenPlusOther, values='frequency', names=divLevel)
+
+    speciesPie.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
+                  marker=dict(colors=topTenPlusOther['color'], line=dict(color='#000000', width=2)))
 
     speciesPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     speciesPie.update_layout(showlegend=False)
@@ -141,23 +140,22 @@ def diversity(data):
     #add color column to table for plotting pie chart
     topTenCpaPlusOther = topTenCpaPlusOther.merge(st.session_state['colorsTable'],left_on = divLevel, right_on = 'taxon', how = 'left')
 
+    CpaPie = px.pie(topTenCpaPlusOther, values='Crown Projection Area', names=divLevel)
+
+    CpaPie.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
+                marker=dict(colors=topTenCpaPlusOther['color'], line=dict(color='#000000', width=2)))
     
-    # st.dataframe(topTenCpaPlusOther)
+    topTenCpaPlusOther['percent'] = topTenCpaPlusOther['Crown Projection Area']/topTenCpaPlusOther['Crown Projection Area'].sum()
 
+    
+    with st.expander("Click to view tabular data.", expanded=False):
 
-    CpaPie = px.pie(topTenCpaPlusOther, 
-        values='Crown Projection Area',
-        color = 'color', 
-        names = divLevel,
-        )
+        st.dataframe(topTenCpaPlusOther, hide_index = True, 
+            column_order=(divLevel, "Crown Projection Area", "percent"))
+        
+        # divTable = ff.create_table(topTenCpaPlusOther.round(decimals = 0))
+        # st.plotly_chart(divTable)
 
-    # # topTenCpaPlusOther = topTenCpaSorted.append({divLevel:'Other', 'cpa': otherCpaTotal}, ignore_index =True)
-    # CpaPie = px.pie(topTenCpaPlusOther, 
-    #     values='Crown Projection Area', 
-    #     names = divLevel,
-    #     color = divLevel,
-    #     color_discrete_map = colorsDict
-    #     )
 
     CpaPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     CpaPie.update_layout(showlegend=False)
