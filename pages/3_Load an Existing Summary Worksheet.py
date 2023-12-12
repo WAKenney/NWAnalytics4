@@ -59,11 +59,11 @@ def getData(fileName):
             st.warning("Uh oh! The file you selected doesn't appear to be a SUMMARY file. You may have to run the 'Create or Refresh Summary Worksheet' function first.")
 
         
-def fix_column_names(df):
+def fix_column_names(df_trees):
     '''Standardize column names to lower case and hyphenated (no spaces) as well as correct various 
     different spelling of names.'''
     
-    return df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block',
+    df_trees.rename(columns = {'Tree Name' : 'tree_name', 'Date' : 'date', 'Block ID' : 'block', 'Block Id':'block',
                                    'Tree Number' : 'tree_number', 'House Number' : 'house_number', 'Street Code' : 'street_code', 
                                    'Species Code' : 'species_code', 'Location Code' : 'location_code', 'location':'location_code', 
                                    'Ownership Code' : 'ownership_code','ownership':'ownership_code','Ownership code':'ownership_code', 
@@ -81,14 +81,36 @@ def fix_column_names(df):
                                    'Conflict with Wires' : 'wire_conflict', 'Conflict with Sidewalk' : 'sidewalk_conflict', 
                                    'Conflict with Structure' : 'structure_conflict', 'Conflict with Another Tree' : 'tree_conflict', 
                                    'Conflict with Traffic Sign' : 'sign_conflict', 'Comments' : 'comments', 
-                                   'Longitude' : 'longitude', 'Latitude' : 'latitude', 
+                                   'Longitude' : 'longitude', 'Latitude' : 'latitude', 'street_name':'street',
                                    'Street' : 'street', 'Family' : 'family', 'Genus' : 'genus', 'Species' : 'species', 
                                    'Invasivity' : 'invasivity', 'Species Suitability' : 'suitability', 
                                    'Diversity Level' : 'diversity_level', 'Native' : 'native', 'Crown Projection Area (CPA)' : 'cpa', 
-                                   'Address' : 'address', 'DBH Class' : 'dbh_class', 'Relative DBH' : 'rdbh', 
+                                   'Address' : 'address', 'DBH Class' : 'dbh_class', 'Relative DBH' : 'rdbh', 'Relative Dbh': 'rdbh', 
                                    'Relative DBH Class' : 'rdbh_class', 'Structural Defects' : 'structural', 
                                    'Health Defects' : 'health', 'Description' : 'description', 'Defects' : 'defects', 
-                                   'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'})
+                                   'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'}, inplace = True)
+    
+
+
+    df_trees = df_trees.astype({'block' : 'category', 'street_code' : 'category', 'species_code' : 'category', 
+                                   'location_code' : 'category', 'ownership_code' : 'category', 
+                                   'reduced_crown' : 'category', 'unbalanced_crown' : 'category', 'defoliation' : 'category', 
+                                   'weak_or_yellow_foliage' : 'category', 'dead_or_broken_branch' : 'category', 'lean' : 'category', 
+                                   'poor_branch_attachment' : 'category', 'branch_scars' : 'category', 
+                                   'trunk_scars' : 'category', 'conks' : 'category', 'branch_rot_or_cavity' : 'category', 
+                                   'trunk_rot_or_cavity' : 'category', 'confined_space' : 'category', 
+                                   'crack' : 'category', 'girdling_roots' : 'category',  'exposed_roots' : 'category', 
+                                   'recent_trenching' : 'category', 'cable_or_brace' : 'category', 
+                                   'wire_conflict' : 'category', 'sidewalk_conflict' : 'category', 
+                                   'structure_conflict' : 'category', 'tree_conflict' : 'category', 
+                                   'sign_conflict' : 'category','street' : 'category', 'family' : 'category', 
+                                   'genus' : 'category', 'species' : 'category', 
+                                   'invasivity' : 'category', 'suitability' : 'category', 
+                                   'diversity_level' : 'category', 'invasivity' : 'category', 'dbh_class' : 'category', 
+                                   'rdbh_class' : 'category', 'structural' : 'category', 
+                                   'health' : 'category', 'defects' : 'category'})
+    
+    return df_trees
 
 
 # def let_it_rain():
@@ -100,6 +122,8 @@ df_trees = getData(fileName)
 if df_trees is not None:
 
     df_trees = fix_column_names(df_trees)
+
+    # df_trees = set_data_types(df_trees)
 
     screen1 = st.empty()
     

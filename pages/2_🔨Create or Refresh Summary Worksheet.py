@@ -96,7 +96,6 @@ def create_summary_data():
 
     df_trees = get_raw_data(fileName)
 
-
     @st.cache_data(show_spinner="Loading your street data, please wait ...")
     def get_streets():
 
@@ -142,35 +141,9 @@ def create_summary_data():
                                    'Conflict with Wires' : 'wire_conflict', 'Conflict with Sidewalk' : 'sidewalk_conflict', 
                                    'Conflict with Structure' : 'structure_conflict', 'Conflict with Another Tree' : 'tree_conflict', 
                                    'Conflict with Traffic Sign' : 'sign_conflict', 'Comments' : 'comments', 
-                                   'Longitude' : 'longitude', 'Latitude' : 'latitude', 'street_name':'street',
-                                   'Street' : 'street', 'Family' : 'family', 'Genus' : 'genus', 'Species' : 'species', 
-                                   'Invasivity' : 'invasivity', 'Species Suitability' : 'suitability', 
-                                   'Diversity Level' : 'diversity_level', 'Native' : 'native', 'Crown Projection Area (CPA)' : 'cpa', 
-                                   'Address' : 'address', 'DBH Class' : 'dbh_class', 'Relative DBH' : 'rdbh','Relative Dbh' : 'rdbh', 
-                                   'Relative DBH Class' : 'rdbh_class', 'Structural Defects' : 'structural', 
-                                   'Health Defects' : 'health', 'Description' : 'description', 'Defects' : 'defects', 
-                                   'Defect Colour' : 'defectColour',  'Total Demerits' : 'demerits', 'Simple Rating' : 'simple_rating'},
+                                   'Longitude' : 'longitude', 'Latitude' : 'latitude'},
                                    inplace = True)
         
-        df_trees = df_trees.astype({'block' : 'category', 'street_code' : 'category', 'species_code' : 'category', 
-                                   'location_code' : 'category', 'ownership_code' : 'category', 
-                                   'reduced_crown' : 'category', 'unbalanced_crown' : 'category', 'defoliation' : 'category', 
-                                   'weak_or_yellow_foliage' : 'category', 'dead_or_broken_branch' : 'category', 'lean' : 'category', 
-                                   'poor_branch_attachment' : 'category', 'branch_scars' : 'category', 
-                                   'trunk_scars' : 'category', 'conks' : 'category', 'branch_rot_or_cavity' : 'category', 
-                                   'trunk_rot_or_cavity' : 'category', 'confined_space' : 'category', 
-                                   'crack' : 'category', 'girdling_roots' : 'category',  'exposed_roots' : 'category', 
-                                   'recent_trenching' : 'category', 'cable_or_brace' : 'category', 
-                                   'wire_conflict' : 'category', 'sidewalk_conflict' : 'category', 
-                                   'structure_conflict' : 'category', 'tree_conflict' : 'category', 
-                                   'sign_conflict' : 'category','street' : 'category', 'family' : 'category', 
-                                   'genus' : 'category', 'species' : 'category', 
-                                   'invasivity' : 'category', 'suitability' : 'category', 
-                                   'diversity_level' : 'category', 'invasivity' : 'category', 'dbh_class' : 'category', 
-                                   'rdbh_class' : 'category', 'structural' : 'category', 
-                                   'health' : 'category', 'defects' : 'category'})
-       
-
         dataCols =df_trees.columns
 
         df_streets.rename(columns = {'ADDRESS':'street_code','ADDRESSNAME':'street_name','street':'street_code','street name':'street_name' }, inplace = True)
@@ -323,9 +296,9 @@ def create_summary_data():
 
             return cpa
 
-        df_trees['Crown Projection Area (CPA)'] = df_trees['crown_width'].apply(lambda x: (cpa(x)))
+        df_trees['cpa'] = df_trees['crown_width'].apply(lambda x: (cpa(x)))
 
-        df_trees["Address"] = df_trees.apply(lambda x : str(x["house_number"]) + ' ' +  str(x["street_name"]), axis=1)
+        df_trees["address"] = df_trees.apply(lambda x : str(x["house_number"]) + ' ' +  str(x["street_name"]), axis=1)
 
 
         def dbhClass(df):
@@ -346,19 +319,19 @@ def create_summary_data():
 
                 return 'IV'
 
-        df_trees['DBH Class'] = df_trees.apply(dbhClass, axis =1)
+        df_trees['dbh_class'] = df_trees.apply(dbhClass, axis =1)
 
 
         def rdbh():
 
-            df_trees['Relative Dbh'] =df_trees.apply(lambda x: 'n/a' if pd.isnull('dbh') else x.dbh/x.max_dbh, axis =1).round(2)
+            df_trees['rdbh'] =df_trees.apply(lambda x: 'n/a' if pd.isnull('dbh') else x.dbh/x.max_dbh, axis =1).round(2)
 
             df_trees.drop('max_dbh', axis=1, inplace=True)
 
 
         rdbh()
 
-        df_trees['Relative DBH Class'] = pd.cut(x=df_trees['Relative Dbh'], bins=[0, 0.25, 0.5, 0.75, 3.0], labels = ['I', 'II', 'III','IV'])
+        df_trees['rdbh_class'] = pd.cut(x=df_trees['rdbh'], bins=[0, 0.25, 0.5, 0.75, 3.0], labels = ['I', 'II', 'III','IV'])
 
 
         def structural(df):
@@ -404,7 +377,7 @@ def create_summary_data():
                 return 'no'
 
 
-        df_trees['Structural Defects']= df_trees.apply(structural, axis =1)
+        df_trees['structural']= df_trees.apply(structural, axis =1)
 
 
         def health(df):
@@ -438,43 +411,43 @@ def create_summary_data():
                 return 'no'
 
 
-        df_trees['Health Defects']= df_trees.apply(health, axis =1)
+        df_trees['health']= df_trees.apply(health, axis =1)
 
 
         def desc(df):
 
             df_cond = pd.DataFrame(columns=attributeNames)
 
-            df['Description'] = []
+            df['description'] = []
 
-            df['Description'] = "Tree {} is a {} at {}. The most recent assessment was done on {}.".format(df['tree_name'], df['species'], df['Address'], df['date'])
-            # df['Description'] = f"Tree {df['tree_name']} is a {df['species']} at {df['Address']}. The most recent assessment was done on {df['date']:%B %d, %y}."
+            df['description'] = "Tree {} is a {} at {}. The most recent assessment was done on {}.".format(df['tree_name'], df['species'], df['address'], df['date'])
+            # df['description'] = f"Tree {df['tree_name']} is a {df['species']} at {df['address']}. The most recent assessment was done on {df['date']:%B %d, %y}."
 
-            if df['Structural Defects'] == 'yes' and df['Health Defects'] =='yes':
+            if df['structural'] == 'yes' and df['health'] =='yes':
 
-                df['Description'] = df['Description'] + ' It has significant structural AND health defects'
+                df['description'] = df['description'] + ' It has significant structural AND health defects'
             
-            elif df['Structural Defects'] == 'yes':
+            elif df['structural'] == 'yes':
 
-                df['Description'] = df['Description'] + ' It has at least one significant structural defect.'
+                df['description'] = df['description'] + ' It has at least one significant structural defect.'
             
-            elif df['Health Defects'] == 'yes':
+            elif df['health'] == 'yes':
 
-                df['Description'] = df['Description'] + ' It has at least one significant health defect.'
+                df['description'] = df['description'] + ' It has at least one significant health defect.'
             
-            elif df['Structural Defects'] == 'yes' and df['Health Defects'] =='yes':
+            elif df['structural'] == 'yes' and df['health'] =='yes':
 
-                df['Description'] = df['Description'] + ' It has significant structural AND health defects'
+                df['description'] = df['description'] + ' It has significant structural AND health defects'
             
             else:
 
-                df['Description'] = df['Description'] + ' It has no SIGNIFICANT health or structural defects.'
+                df['description'] = df['description'] + ' It has no SIGNIFICANT health or structural defects.'
 
-            df['Description'] = df['Description'] + " It has a DBH of {} cm, a total height of {:,.0f} m and a crown width of {:,.0f}m.".format(df['dbh'], df['total_height'], df['crown_width'])
+            df['description'] = df['description'] + " It has a DBH of {} cm, a total height of {:,.0f} m and a crown width of {:,.0f}m.".format(df['dbh'], df['total_height'], df['crown_width'])
 
             if pd.notnull(df['hard_surface']):
 
-                df['Description'] = df['Description'] + " The area under the crown is {:,.0f}% hard surface. ".format(df['hard_surface'])
+                df['description'] = df['description'] + " The area under the crown is {:,.0f}% hard surface. ".format(df['hard_surface'])
 
             return df
 
@@ -488,7 +461,7 @@ def create_summary_data():
             which is then filled with the text from df_codes 
             corresponding to each of the scores from df_trees for each column 
             in code_names. The result is additon of condition descriptions to
-            df_trees['Description']'''
+            df_trees['description']'''
 
             df_cond = pd.DataFrame(columns=attributeNames)
             
@@ -498,7 +471,7 @@ def create_summary_data():
                 
             condition = df_cond.apply(lambda row: ''.join(map(str, row)), axis=1)
 
-            df_trees['Description'] = df_trees['Description'] + condition
+            df_trees['description'] = df_trees['description'] + condition
 
 
         condition() # This calls the function condition()
@@ -510,19 +483,19 @@ def create_summary_data():
             respones in the structural and health columns of the input data.
             """
 
-            if ((df['Structural Defects'] == 'no') & (df['Health Defects'] =='no')):
+            if ((df['structural'] == 'no') & (df['health'] =='no')):
 
                 return 'No major defects'
 
-            elif ((df['Structural Defects'] == 'yes') & (df['Health Defects'] =='no')):
+            elif ((df['structural'] == 'yes') & (df['health'] =='no')):
 
                 return 'Major structural defect(s)'
 
-            elif ((df['Structural Defects'] == 'no') & (df['Health Defects'] =='yes')):
+            elif ((df['structural'] == 'no') & (df['health'] =='yes')):
 
                 return 'Major health defect(s)'
 
-            elif ((df['Structural Defects'] == 'yes') & (df['Health Defects'] =='yes')):
+            elif ((df['structural'] == 'yes') & (df['health'] =='yes')):
 
                 return 'Major structural AND health defect(s)'
 
@@ -580,48 +553,92 @@ def create_summary_data():
 
         # st.session_state['colorsTable'] = colorsTable
 
-        df_trees.rename(columns = {'tree_name' : 'Tree Name', 'date' : 'Date', 'block' : 'Block ID', 'tree_number' : 'Tree Number', 
-                                   'house_number' : 'House Number', 'street_code' : 'Street Code', 'species_code' : 'Species Code', 
-                                   'location_code' : 'Location Code', 'ownership_code' : 'Ownership Code', 
-                                   'number_of_stems' : 'Number of Stems', 'dbh' : 'DBH', 'hard_surface' : 'Hard Surface', 
-                                   'crown_width' : 'Crown Width', 'height_to_crown_base' : 'Ht to Crown Base', 
-                                   'total_height' : 'Total Height', 'reduced_crown' : 'Reduced Crown', 
-                                   'unbalanced_crown' : 'Unbalanced Crown', 'defoliation' : 'Defoliation', 
-                                   'weak_or_yellow_foliage' : 'Weak or Yellowing Foliage', 
-                                   'dead_or_broken_branch' : 'Dead or Broken Branch', 'lean' : 'Lean', 
-                                   'poor_branch_attachment' : 'Poor Branch Attachment', 'branch_scars' : 'Branch Scars', 
-                                   'trunk_scars' : 'Trunk Scars', 'conks' : 'Conks', 'branch_rot_or_cavity' : 'Rot or Cavity - Branch', 
-                                   'trunk_rot_or_cavity' : 'Rot or Cavity - Trunk', 'confined_space' : 'Confined Space', 
-                                   'crack' : 'Crack', 'girdling_roots' : 'Girdling Roots',  'exposed_roots' : 'Exposed Roots', 
-                                   'recent_trenching' : 'Recent Trenching', 'cable_or_brace' : 'Cable or Brace', 
-                                   'wire_conflict' : 'Conflict with Wires', 'sidewalk_conflict' : 'Conflict with Sidewalk', 
-                                   'structure_conflict' : 'Conflict with Structure', 'tree_conflict' : 'Conflict with Another Tree', 
-                                   'sign_conflict' : 'Conflict with Traffic Sign', 'comments' : 'Comments', 
-                                   'longitude' : 'Longitude', 'latitude' : 'Latitude', 
-                                   'street' : 'Street', 'family' : 'Family', 'genus' : 'Genus', 'species' : 'Species', 
-                                   'invasivity' : 'Invasivity', 'suitability' : 'Species Suitability', 
-                                   'diversity_level' : 'Diversity Level', 'native' : 'Native', 'cpa' : 'Crown Projection Area (CPA)', 
-                                   'address' : 'Address', 'dbh_class' : 'DBH Class', 'rdbh' : 'Relative DBH', 
-                                   'rdbh_class' : 'Relative DBH Class', 'structural' : 'Structural Defects', 
-                                   'health' : 'Health Defects', 'description' : 'Description', 'defects' : 'Defects', 
-                                   'defectColour' : 'Defect Colour', 'demerits' :  'Total Demerits', 'simple_rating' : 'Simple Rating'},
-                                   inplace = True)
-        
+
+        df_trees = df_trees.astype({'block' : 'category', 'street_code' : 'category', 'species_code' : 'category', 
+                                   'location_code' : 'category', 'ownership_code' : 'category', 
+                                   'reduced_crown' : 'category', 'unbalanced_crown' : 'category', 'defoliation' : 'category', 
+                                   'weak_or_yellow_foliage' : 'category', 'dead_or_broken_branch' : 'category', 'lean' : 'category', 
+                                   'poor_branch_attachment' : 'category', 'branch_scars' : 'category', 
+                                   'trunk_scars' : 'category', 'conks' : 'category', 'branch_rot_or_cavity' : 'category', 
+                                   'trunk_rot_or_cavity' : 'category', 'confined_space' : 'category', 
+                                   'crack' : 'category', 'girdling_roots' : 'category',  'exposed_roots' : 'category', 
+                                   'recent_trenching' : 'category', 'cable_or_brace' : 'category', 
+                                   'wire_conflict' : 'category', 'sidewalk_conflict' : 'category', 
+                                   'structure_conflict' : 'category', 'tree_conflict' : 'category', 
+                                   'sign_conflict' : 'category','street_name' : 'category', 'family' : 'category', 
+                                   'genus' : 'category', 'species' : 'category', 
+                                   'invasivity' : 'category', 'suitability' : 'category', 
+                                   'diversity_level' : 'category', 'invasivity' : 'category', 'dbh_class' : 'category', 
+                                   'rdbh_class' : 'category', 'structural' : 'category', 
+                                   'health' : 'category', 'defects' : 'category'})
+       
+
+         #Add df_trees to session_state
         if 'df_trees' not in st.session_state:
 
             st.session_state['df_trees'] = []
 
         st.session_state['df_trees'] = df_trees
+
+        #Add select_df to session_state but at this point it is the same as df_trees.  This will be replaced if a filter is applied
+        if "select_df" not in st.session_state:
+
+            st.session_state['select_df'] = []
+
+        st.session_state['select_df'] = df_trees
+
+        st.write(df_trees.columns)
+
+
+        # df_trees.rename(columns = {'tree_name' : 'Tree Name', 'date' : 'Date', 'block' : 'Block ID', 'tree_number' : 'Tree Number', 
+        #                            'house_number' : 'House Number', 'street_code' : 'Street Code', 'species_code' : 'Species Code', 
+        #                            'location_code' : 'Location Code', 'ownership_code' : 'Ownership Code', 
+        #                            'number_of_stems' : 'Number of Stems', 'dbh' : 'DBH', 'hard_surface' : 'Hard Surface', 
+        #                            'crown_width' : 'Crown Width', 'height_to_crown_base' : 'Ht to Crown Base', 
+        #                            'total_height' : 'Total Height', 'reduced_crown' : 'Reduced Crown', 
+        #                            'unbalanced_crown' : 'Unbalanced Crown', 'defoliation' : 'Defoliation', 
+        #                            'weak_or_yellow_foliage' : 'Weak or Yellowing Foliage', 
+        #                            'dead_or_broken_branch' : 'Dead or Broken Branch', 'lean' : 'Lean', 
+        #                            'poor_branch_attachment' : 'Poor Branch Attachment', 'branch_scars' : 'Branch Scars', 
+        #                            'trunk_scars' : 'Trunk Scars', 'conks' : 'Conks', 'branch_rot_or_cavity' : 'Rot or Cavity - Branch', 
+        #                            'trunk_rot_or_cavity' : 'Rot or Cavity - Trunk', 'confined_space' : 'Confined Space', 
+        #                            'crack' : 'Crack', 'girdling_roots' : 'Girdling Roots',  'exposed_roots' : 'Exposed Roots', 
+        #                            'recent_trenching' : 'Recent Trenching', 'cable_or_brace' : 'Cable or Brace', 
+        #                            'wire_conflict' : 'Conflict with Wires', 'sidewalk_conflict' : 'Conflict with Sidewalk', 
+        #                            'structure_conflict' : 'Conflict with Structure', 'tree_conflict' : 'Conflict with Another Tree', 
+        #                            'sign_conflict' : 'Conflict with Traffic Sign', 'comments' : 'Comments', 
+        #                            'longitude' : 'Longitude', 'latitude' : 'Latitude', 
+        #                            'street' : 'Street', 'family' : 'Family', 'genus' : 'Genus', 'species' : 'Species', 
+        #                            'invasivity' : 'Invasivity', 'suitability' : 'Species Suitability', 
+        #                            'diversity_level' : 'Diversity Level', 'native' : 'Native', 'cpa' : 'Crown Projection Area (CPA)', 
+        #                            'address' : 'Address', 'dbh_class' : 'DBH Class', 'rdbh' : 'Relative DBH', 
+        #                            'rdbh_class' : 'Relative DBH Class', 'structural' : 'Structural Defects', 
+        #                            'health' : 'Health Defects', 'description' : 'Description', 'defects' : 'Defects', 
+        #                            'defectColour' : 'Defect Colour', 'demerits' :  'Total Demerits', 'simple_rating' : 'Simple Rating'},
+        #                            inplace = True)
+
             
         return df_trees
 
     
-    if 'df_trees' not in st.session_state:
+    # if 'df_trees' not in st.session_state:
 
-        st.session_state['df_trees'] = []
+    #     st.session_state['df_trees'] = []
 
-    st.session_state['df_trees'] = df_trees
+    # st.session_state['df_trees'] = df_trees
 
+
+    # #Add select_df to session_state but at this point it is the same as df_trees.  This will be replaced if a filter is applied
+    # if "select_df" not in st.session_state:
+
+    #     st.session_state['select_df'] = []
+
+    # st.session_state['select_df'] = df_trees
+    
+    select_tree_count = df_trees.shape[0]
+
+    
+    
     # with save_data_screen:
 
     #     screen1.write(df_trees.head(2))
@@ -705,7 +722,12 @@ if fileName is not None:
 
     total_tree_count = df_trees.shape[0]
 
-    st.session_state['total_tree_count'] = total_tree_count
+    if 'select_tree_count' not in st.session_state:
+
+        st.session_state['select_tree_count'] = []
+    
+    st.session_state['select_tree_count'] = total_tree_count
+
 
     screen1.markdown(f'''#### There are :red[{total_tree_count}] now loaded.  You can save this summary file by clicking on the button below, and/or proceed with the analyses in the sidebar to the left''')
 
