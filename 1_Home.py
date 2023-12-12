@@ -1,7 +1,9 @@
 import pandas as pd
 import geopandas as gpd
 import streamlit as st
-from datetime import datetime
+import datetime
+import pytz
+
 
 st.set_page_config(layout="centered")
 
@@ -18,10 +20,15 @@ title = 'nw4_splash_page.png'
 
 titleCol2.image(title)
 
+# Set timezone
+timezone = pytz.timezone('America/Toronto')
 
+# Get the current local time
+now = datetime.datetime.now(timezone)
 
-now = datetime.now()
-formatted_date = now.strftime("%d-%m-%Y %H:%M:%S")
+# Print the current local time
+formatted_date = now.strftime("%d-%m-%Y %H:%M:%S %p")
+
 st.write("Last updated:", formatted_date)
 
 
