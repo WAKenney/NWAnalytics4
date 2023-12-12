@@ -590,34 +590,34 @@ def create_summary_data():
         st.write(df_trees.columns)
 
 
-        # df_trees.rename(columns = {'tree_name' : 'Tree Name', 'date' : 'Date', 'block' : 'Block ID', 'tree_number' : 'Tree Number', 
-        #                            'house_number' : 'House Number', 'street_code' : 'Street Code', 'species_code' : 'Species Code', 
-        #                            'location_code' : 'Location Code', 'ownership_code' : 'Ownership Code', 
-        #                            'number_of_stems' : 'Number of Stems', 'dbh' : 'DBH', 'hard_surface' : 'Hard Surface', 
-        #                            'crown_width' : 'Crown Width', 'height_to_crown_base' : 'Ht to Crown Base', 
-        #                            'total_height' : 'Total Height', 'reduced_crown' : 'Reduced Crown', 
-        #                            'unbalanced_crown' : 'Unbalanced Crown', 'defoliation' : 'Defoliation', 
-        #                            'weak_or_yellow_foliage' : 'Weak or Yellowing Foliage', 
-        #                            'dead_or_broken_branch' : 'Dead or Broken Branch', 'lean' : 'Lean', 
-        #                            'poor_branch_attachment' : 'Poor Branch Attachment', 'branch_scars' : 'Branch Scars', 
-        #                            'trunk_scars' : 'Trunk Scars', 'conks' : 'Conks', 'branch_rot_or_cavity' : 'Rot or Cavity - Branch', 
-        #                            'trunk_rot_or_cavity' : 'Rot or Cavity - Trunk', 'confined_space' : 'Confined Space', 
-        #                            'crack' : 'Crack', 'girdling_roots' : 'Girdling Roots',  'exposed_roots' : 'Exposed Roots', 
-        #                            'recent_trenching' : 'Recent Trenching', 'cable_or_brace' : 'Cable or Brace', 
-        #                            'wire_conflict' : 'Conflict with Wires', 'sidewalk_conflict' : 'Conflict with Sidewalk', 
-        #                            'structure_conflict' : 'Conflict with Structure', 'tree_conflict' : 'Conflict with Another Tree', 
-        #                            'sign_conflict' : 'Conflict with Traffic Sign', 'comments' : 'Comments', 
-        #                            'longitude' : 'Longitude', 'latitude' : 'Latitude', 
-        #                            'street' : 'Street', 'family' : 'Family', 'genus' : 'Genus', 'species' : 'Species', 
-        #                            'invasivity' : 'Invasivity', 'suitability' : 'Species Suitability', 
-        #                            'diversity_level' : 'Diversity Level', 'native' : 'Native', 'cpa' : 'Crown Projection Area (CPA)', 
-        #                            'address' : 'Address', 'dbh_class' : 'DBH Class', 'rdbh' : 'Relative DBH', 
-        #                            'rdbh_class' : 'Relative DBH Class', 'structural' : 'Structural Defects', 
-        #                            'health' : 'Health Defects', 'description' : 'Description', 'defects' : 'Defects', 
-        #                            'defectColour' : 'Defect Colour', 'demerits' :  'Total Demerits', 'simple_rating' : 'Simple Rating'},
-        #                            inplace = True)
-
-            
+        df_trees.rename(columns = {'tree_name' : 'Tree Name', 'date' : 'Date', 'block' : 'Block ID', 'tree_number' : 'Tree Number', 
+                                   'house_number' : 'House Number', 'street_code' : 'Street Code', 'species_code' : 'Species Code', 
+                                   'location_code' : 'Location Code', 'ownership_code' : 'Ownership Code', 
+                                   'number_of_stems' : 'Number of Stems', 'dbh' : 'DBH', 'hard_surface' : 'Hard Surface', 
+                                   'crown_width' : 'Crown Width', 'height_to_crown_base' : 'Ht to Crown Base', 
+                                   'total_height' : 'Total Height', 'reduced_crown' : 'Reduced Crown', 
+                                   'unbalanced_crown' : 'Unbalanced Crown', 'defoliation' : 'Defoliation', 
+                                   'weak_or_yellow_foliage' : 'Weak or Yellowing Foliage', 
+                                   'dead_or_broken_branch' : 'Dead or Broken Branch', 'lean' : 'Lean', 
+                                   'poor_branch_attachment' : 'Poor Branch Attachment', 'branch_scars' : 'Branch Scars', 
+                                   'trunk_scars' : 'Trunk Scars', 'conks' : 'Conks', 'branch_rot_or_cavity' : 'Rot or Cavity - Branch', 
+                                   'trunk_rot_or_cavity' : 'Rot or Cavity - Trunk', 'confined_space' : 'Confined Space', 
+                                   'crack' : 'Crack', 'girdling_roots' : 'Girdling Roots',  'exposed_roots' : 'Exposed Roots', 
+                                   'recent_trenching' : 'Recent Trenching', 'cable_or_brace' : 'Cable or Brace', 
+                                   'wire_conflict' : 'Conflict with Wires', 'sidewalk_conflict' : 'Conflict with Sidewalk', 
+                                   'structure_conflict' : 'Conflict with Structure', 'tree_conflict' : 'Conflict with Another Tree', 
+                                   'sign_conflict' : 'Conflict with Traffic Sign', 'comments' : 'Comments', 
+                                   'longitude' : 'Longitude', 'latitude' : 'Latitude', 
+                                   'street' : 'Street', 'family' : 'Family', 'genus' : 'Genus', 'species' : 'Species', 
+                                   'invasivity' : 'Invasivity', 'suitability' : 'Species Suitability', 
+                                   'diversity_level' : 'Diversity Level', 'native' : 'Native', 'cpa' : 'Crown Projection Area (CPA)', 
+                                   'address' : 'Address', 'dbh_class' : 'DBH Class', 'rdbh' : 'Relative DBH', 
+                                   'rdbh_class' : 'Relative DBH Class', 'structural' : 'Structural Defects', 
+                                   'health' : 'Health Defects', 'description' : 'Description', 'defects' : 'Defects', 
+                                   'defectColour' : 'Defect Colour', 'demerits' :  'Total Demerits', 'simple_rating' : 'Simple Rating'},
+                                   inplace = True)
+        
+                    
         return df_trees
 
     
@@ -675,7 +675,7 @@ def save_data(df_trees):
     writer = pd.ExcelWriter(buffer, engine='xlsxwriter')
 
     # write the dataframes to separate sheets in the workbook
-    df_trees.to_excel(writer, sheet_name='trees', index=False)
+    df_trees.to_excel(writer, sheet_name='summary', index=False)
 
     df_streets = []
 
@@ -719,6 +719,8 @@ fileName = st.file_uploader("Browse for or drag and drop the name of your Neighb
 if fileName is not None:
     
     df_trees = create_summary_data()
+
+    st.write(df_trees.head(2))
 
     total_tree_count = df_trees.shape[0]
 
