@@ -106,10 +106,17 @@ def diversity(data):
     speciesPie.update_traces(textfont_size=15,
                   marker=dict(line=dict(color='#000000', width=1)))
     
+    #Add a column to the table showing the percetage of CPA for each species
+    topTenPlusOther['percent'] = topTenPlusOther['frequency']/topTenPlusOther['frequency'].sum()
+
 
     with st.expander("Click to view tabular data.", expanded=False):
-        divTable = ff.create_table(topTenPlusOther.round(decimals = 0))
-        st.plotly_chart(divTable)
+        # divTable = ff.create_table(topTenPlusOther.round(decimals = 0))
+        # st.plotly_chart(divTable)
+
+        st.dataframe(topTenPlusOther, hide_index = True, 
+            column_order=(divLevel, "frequency", "percent"))
+
 
     st.plotly_chart(speciesPie)
     
@@ -124,15 +131,15 @@ def diversity(data):
     topTenCpaTotal = topTenCpaSorted['cpa'].sum()
     otherCpaTotal = totalCpa - topTenCpaTotal
 
-# initialize list for 'other' row iin table 
+    # initialize list for 'other' row iin table 
     other_cpa_data = [['Other', otherCpaTotal]] 
     
     # Create the pandas DataFrame of 'other' row
-    other_df = pd.DataFrame(other_cpa_data, columns=[divLevel, 'tree_name'])
+    other_df = pd.DataFrame(other_cpa_data, columns=[divLevel, 'cpa'])
 
     #concatenate the full table and the row for 'other'
     topTenCpaPlusOther = pd.concat([topTenCpaSorted,other_df])
-
+    
     #rename the column named 'tree-name' to frequency. 'tree-name' was used to count since every rows is sure to have a value in  tree name
     topTenCpaPlusOther.rename(columns = {'cpa': 'Crown Projection Area'},inplace = True)
 
@@ -140,23 +147,22 @@ def diversity(data):
     #add color column to table for plotting pie chart
     topTenCpaPlusOther = topTenCpaPlusOther.merge(st.session_state['colorsTable'],left_on = divLevel, right_on = 'taxon', how = 'left')
 
+    #Draw the pir chart
     CpaPie = px.pie(topTenCpaPlusOther, values='Crown Projection Area', names=divLevel)
 
+    #format the colour of the slices as well as the colour and width of the lines between slices
     CpaPie.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
                 marker=dict(colors=topTenCpaPlusOther['color'], line=dict(color='#000000', width=2)))
     
+    #Add a column to the table showing the percetage of CPA for each species
     topTenCpaPlusOther['percent'] = topTenCpaPlusOther['Crown Projection Area']/topTenCpaPlusOther['Crown Projection Area'].sum()
 
-    
+    #Create an expander to show the tabular data
     with st.expander("Click to view tabular data.", expanded=False):
 
         st.dataframe(topTenCpaPlusOther, hide_index = True, 
             column_order=(divLevel, "Crown Projection Area", "percent"))
-        
-        # divTable = ff.create_table(topTenCpaPlusOther.round(decimals = 0))
-        # st.plotly_chart(divTable)
-
-
+    
     CpaPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     CpaPie.update_layout(showlegend=False)
     CpaPie.update_traces(textfont_size=15,
