@@ -19,12 +19,6 @@ currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
 speciesFile = currentDir + 'NWspecies220522.xlsx'
 
-attributeNames = ['reduced_crown', 'unbalanced_crown', 'defoliation',
-    'weak_or_yellow_foliage', 'dead_or_broken_branch',  'lean', 'poor_branch_attachment',	
-    'branch_scars', 'trunk_scars', 'conks', 'branch_rot_or_cavity', 
-    'trunk_rot_or_cavity', 'confined_space', 'crack', 'exposed_roots', 'girdling_roots', 'recent_trenching']
-
-
 #Create page title
 titleCol1, titleCol2, titleCol3 =st.columns((1,4,1))
 
@@ -41,6 +35,12 @@ screen2 = st.empty()
 
 st.markdown("___")
 
+screen3 = st.empty()
+
+attributeNames = ['reduced_crown', 'unbalanced_crown', 'defoliation',
+    'weak_or_yellow_foliage', 'dead_or_broken_branch',  'lean', 'poor_branch_attachment',	
+    'branch_scars', 'trunk_scars', 'conks', 'branch_rot_or_cavity', 
+    'trunk_rot_or_cavity', 'confined_space', 'crack', 'exposed_roots', 'girdling_roots', 'recent_trenching']
 
 def create_summary_data():
     '''This function adds various values to the inventory input datasheet that are used in the various analyses that follow.  
@@ -56,9 +56,6 @@ def create_summary_data():
         speciesFile = currentDir + 'NWspecies220522.xlsx'
 
         speciesTable = pd.read_excel(speciesFile,sheet_name = "species")
-
-        # st.dataframe(speciesTable)
-
 
         if "speciesTable" not in st.session_state:
 
@@ -81,8 +78,7 @@ def create_summary_data():
         if fileName is not None:
 
             df_trees = pd.DataFrame()
-            # df_streets = pd.DataFrame()
-
+           
             try:
 
                 df_trees = pd.read_excel(fileName, sheet_name = 'trees', header = 0)
@@ -90,7 +86,7 @@ def create_summary_data():
             except:
             
                 st.error("Ooops something is wrong with your data file!")
-            
+
             return df_trees
 
 
@@ -105,8 +101,10 @@ def create_summary_data():
 
             df_streets = pd.read_excel(fileName, sheet_name = 'streets', header = 0)
 
-            df_trees.rename(columns = {'ADDRESS' : 'street_code', 'ADDRESSNAME' : 'street_name',
-                                       'Street Code':'street_code','Street Name':'street_name'})
+            df_streets.rename(columns = {'ADDRESS' : 'street_code', 'ADDRESSNAME' : 'street_name',
+                                       'Street Code':'street_code','street':'street_code',
+                                       'Street Name':'street_name', 'street name':'street_name'
+                                       }, inplace = True)
             
             if 'df_streets' not in st.session_state:
 
@@ -144,9 +142,54 @@ def create_summary_data():
                                    'Longitude' : 'longitude', 'Latitude' : 'latitude'},
                                    inplace = True)
         
+        good_titles = ['tree_name', 'date', 'block', 'tree_number', 'house_number',
+            'street_code', 'species_code', 'location_code', 'ownership_code',
+            'number_of_stems', 'dbh', 'hard_surface', 'crown_width',
+            'height_to_crown_base', 'total_height', 'reduced_crown',
+            'unbalanced_crown', 'defoliation', 'weak_or_yellow_foliage',
+            'dead_or_broken_branch', 'lean', 'poor_branch_attachment',
+            'branch_scars', 'trunk_scars', 'conks', 'branch_rot_or_cavity',
+            'trunk_rot_or_cavity', 'confined_space', 'crack', 'girdling_roots',
+            'exposed_roots', 'recent_trenching', 'cable_or_brace', 'wire_conflict',
+            'sidewalk_conflict', 'structure_conflict', 'tree_conflict',
+            'sign_conflict', 'comments', 'longitude', 'latitude', 'street',
+            'family', 'genus', 'species', 'invasivity', 'suitability',
+            'diversity_level', 'origin', 'cpa', 'address', 'dbh_class', 'rdbh',
+            'rdbh_class', 'structural', 'health', 'description', 'defects',
+            'defectColour']
+
+
+        def test_titles(df):
+
+            st.markdown('#### Testing columns')
+            
+            wrong_titles = [col for col in df.columns if col not in good_titles]
+
+            if len(wrong_titles) == 0:
+
+                screen1.markdown("### All the necessary columns are present in the loaded data!")
+
+            screen1.dataframe(wrong_titles, column_config ={'value': st.column_config.Column(label = 'Incorrect Column Titles')})
+
+
+            missing_titles = [col for col in good_titles if col not in df.columns]
+
+            if len(missing_titles) == 0:
+
+                screen1.markdown("### There are no missing columns in the loaded data!")
+
+            screen1.dataframe(missing_titles, column_config ={'value': st.column_config.Column(label = 'Missing Column Titles')})
+
+
+        test_titles(df_trees)
+
+
         dataCols =df_trees.columns
 
-        df_streets.rename(columns = {'ADDRESS':'street_code','ADDRESSNAME':'street_name','street':'street_code','street name':'street_name' }, inplace = True)
+        # df_streets.rename(columns = {'ADDRESS' : 'street_code', 'ADDRESSNAME' : 'street_name',
+        #                                'Street Code':'street_code','street':'street_code',
+        #                                'Street Name':'street_name', 'street name':'street_name'
+        #                                }, inplace = True)
 
         if 'xy' in dataCols:
             df_trees[['Latitude', 'Longitude']] = df_trees['xy'].str.split(',', 1, expand=True)
@@ -713,14 +756,12 @@ def save_data(df_trees):
 
 fileName ='empty'
 
-fileName = st.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
+fileName = screen3.file_uploader("Browse for or drag and drop the name of your Neighbourwoods INPUT excel workbook", 
     type = ['xlsm', 'xlsx', 'csv'])
 
 if fileName is not None:
     
     df_trees = create_summary_data()
-
-    st.write(df_trees.head(2))
 
     total_tree_count = df_trees.shape[0]
 
