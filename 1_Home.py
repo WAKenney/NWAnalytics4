@@ -4,9 +4,7 @@ import streamlit as st
 import datetime
 import pytz
 
-
 st.set_page_config(layout="centered")
-
 
 currentDir = "https://raw.githubusercontent.com/WAKenney/NWAnalytics/master/"
 
@@ -27,11 +25,9 @@ timezone = pytz.timezone('America/Toronto')
 now = datetime.datetime.now(timezone)
 
 # Print the current local time
-formatted_date = now.strftime("%d-%m-%Y %H:%M:%S %p")
+# formatted_date = now.strftime("%d-%m-%Y %H:%M:%S %p")
 
-st.write("Last updated:", formatted_date)
-
-
+st.markdown("# Last updated: 14/12/2023 11:48 am")
 
 with st.expander("Click here for help in getting started.", expanded=False):
     st.markdown("""
